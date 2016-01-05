@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: cz.dfi.ardronerosbag
+OpenIDE-Module-Localizing-Bundle: cz/dfi/ardronerosbag/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
