@@ -9,6 +9,7 @@ import org.openide.util.lookup.InstanceContent;
  * is available as a service through the application's global lookup.
  * @author Tomas Prochazka
  */
+@Deprecated
 public interface CurrentFileLookupManager {
     /**
      * Gets the lookup content of the currently selected file.

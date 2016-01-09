@@ -2,10 +2,7 @@
  */
 package cz.dfi.graphsselectioncomponent;
 
-import cz.dfi.recorddataprovider.CurrentFileLookupProvider;
-import cz.dfi.recorddataprovider.DataFileInfo;
-import cz.dfi.recorddataprovider.FileSelectionChangedListener;
-import java.awt.BorderLayout;
+import cz.dfi.recorddataprovider.FileLookup;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -42,7 +39,7 @@ import org.openide.util.NbBundle.Messages;
     "CTL_GraphsSelectionTopComponent=GraphsSelection Window",
     "HINT_GraphsSelectionTopComponent=This is a GraphsSelection window"
 })
-public final class GraphsSelectionTopComponent extends TopComponent implements ExplorerManager.Provider, FileSelectionChangedListener {
+public final class GraphsSelectionTopComponent extends TopComponent implements ExplorerManager.Provider {
 
     private final ExplorerManager em = new ExplorerManager();
     private final PropertySheetView graphOptionsSheetView;
@@ -59,11 +56,7 @@ public final class GraphsSelectionTopComponent extends TopComponent implements E
         listView = new OutlineView();
         associateLookup(ExplorerUtils.createLookup(em, getActionMap()));
         jPanel3.add(listView);
-        Lookup l = null;
-        CurrentFileLookupProvider fileProvider = Lookup.getDefault().lookup(CurrentFileLookupProvider.class);
-        if (fileProvider != null) {
-            l = fileProvider.getCurrentFileLookup();
-        }
+        Lookup l = FileLookup.getDefault();
         listOfGraphables = new QuantitiesListModelProvider(l);
         rootNode = new RootNode(listOfGraphables);
         em.setRootContext(rootNode);
@@ -107,18 +100,8 @@ public final class GraphsSelectionTopComponent extends TopComponent implements E
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        CurrentFileLookupProvider provider = Lookup.getDefault().lookup(CurrentFileLookupProvider.class);
-        Lookup lookup = provider.getCurrentFileLookup();
-        provider.addFileSelectionChangedListener(this);
-        if (lookup != null) {
-            selectedFileChanged(lookup, null);
-        }
     }
 
-    @Override
-    public void selectedFileChanged(Lookup l, DataFileInfo file) {
-        listOfGraphables.setCurrentFileLookup(l);
-    }
 
     @Override
     public void componentClosed() {

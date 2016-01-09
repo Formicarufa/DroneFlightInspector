@@ -39,7 +39,7 @@ import org.openide.util.NbBundle.Messages;
 public final class MultipleGraphsTopComponent extends TopComponent {
 
     protected final JFreeChart chart;
-    protected final XYDataset dataset;
+    protected final XYDataset dataset=null;
     public MultipleGraphsTopComponent() {
         initComponents();
         setName(Bundle.CTL_MultipleGraphsTopComponent());

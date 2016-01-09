@@ -1,8 +1,8 @@
-package cz.dfi.filemanagerimplementation;
+package cz.dfi.filelookupprovider;
 
 import cz.dfi.recorddataprovider.CurrentFileLookupManager;
 import cz.dfi.recorddataprovider.CurrentFileLookupProvider;
-import cz.dfi.recorddataprovider.DataFileInfo;
+import cz.dfi.recorddataprovider.RecordFile;
 import cz.dfi.recorddataprovider.FileSelectionChangedListener;
 import cz.dfi.recorddataprovider.FileStateChangedListener;
 import cz.dfi.recorddataprovider.OpenedFilesManager;
@@ -11,11 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.AbstractLookup.Content;
 import org.openide.util.lookup.InstanceContent;
-import org.openide.util.lookup.ServiceProvider;
-import org.openide.util.lookup.ServiceProviders;
 
 /**
  * This service provides the data of the currently selected record file to the
@@ -26,23 +22,24 @@ import org.openide.util.lookup.ServiceProviders;
  *
  * @author Tomas Prochazka 29.9.2015
  */
-@ServiceProviders({
-    @ServiceProvider(
-            service = cz.dfi.recorddataprovider.CurrentFileLookupManager.class
-    ),
-    @ServiceProvider(
-            service = cz.dfi.recorddataprovider.CurrentFileLookupProvider.class
-    ),
-    @ServiceProvider(
-            service = cz.dfi.recorddataprovider.OpenedFilesManager.class
-    )
-})
+//@ServiceProviders({
+//    @ServiceProvider(
+//            service = cz.dfi.recorddataprovider.CurrentFileLookupManager.class
+//    ),
+//    @ServiceProvider(
+//            service = cz.dfi.recorddataprovider.CurrentFileLookupProvider.class
+//    ),
+//    @ServiceProvider(
+//            service = cz.dfi.recorddataprovider.OpenedFilesManager.class
+//    )
+//})
+@Deprecated
 public class FileContextManager implements CurrentFileLookupManager, CurrentFileLookupProvider, OpenedFilesManager, FileStateChangedListener {
 
-    Map<DataFileInfo, LookupAndContent> lookups = new HashMap<>();
+    Map<RecordFile, LookupAndContent> lookups = new HashMap<>();
     List<FileSelectionChangedListener> selectedFileChangeListeners = new ArrayList<>();
     private Lookup currentLookup;
-    private DataFileInfo currentDataFile;
+    private RecordFile currentDataFile;
     private InstanceContent currentLookupContent;
     private int filesCount;
 
@@ -71,7 +68,7 @@ public class FileContextManager implements CurrentFileLookupManager, CurrentFile
      * {@inheritDoc }
      */
     @Override
-    public void fileSelected(DataFileInfo file) {
+    public void fileSelected(RecordFile file) {
         if (currentDataFile != null && currentDataFile.getId() == file.getId()) {
             return;
         }
@@ -87,12 +84,12 @@ public class FileContextManager implements CurrentFileLookupManager, CurrentFile
      * {@inheritDoc }
      */
     @Override
-    public InstanceContent newFileOpened(DataFileInfo file) {
-        InstanceContent c = new InstanceContent();
+    public RecordFile newFileOpened(String name) {
+        
         filesCount++;
-        lookups.put(file, new LookupAndContent(new AbstractLookup(c), c));
-        file.addFileStateChangedListener(this);
-        return c;
+        RecordFile f = new RecordDataFile(name);
+        f.addFileStateChangedListener(this);
+        return f;
     }
 
     /**
@@ -116,7 +113,7 @@ public class FileContextManager implements CurrentFileLookupManager, CurrentFile
      * Invokes the selectedFileChanged methods of all observers of the file
      * selection change event.
      */
-    private void notifyFileSelectionChanged(DataFileInfo f) {
+    private void notifyFileSelectionChanged(RecordFile f) {
         selectedFileChangeListeners.stream().forEach((selectedFileChangeListener) -> {
             selectedFileChangeListener.selectedFileChanged(currentLookup,f);
         });
@@ -126,7 +123,7 @@ public class FileContextManager implements CurrentFileLookupManager, CurrentFile
      * {@inheritDoc }
      */
     @Override
-    public void fileClosed(DataFileInfo dataFile) {
+    public void fileClosed(RecordFile dataFile) {
         lookups.remove(dataFile);
         dataFile.removeFileStateChangedListener(this);
         filesCount--;
@@ -141,7 +138,7 @@ public class FileContextManager implements CurrentFileLookupManager, CurrentFile
     }
 
     @Override
-    public DataFileInfo getCurrentFileInfo() {
+    public RecordFile getCurrentFileInfo() {
         return currentDataFile;
     }
 

@@ -3,11 +3,10 @@
 
 package cz.dfi.graphsselectioncomponent;
 
-import cz.dfi.recorddataprovider.CurrentFileLookupManager;
+import cz.dfi.recorddataprovider.FileLookupProvider;
 import java.beans.IntrospectionException;
 import org.openide.explorer.view.CheckableNode;
 import org.openide.nodes.BeanNode;
-import org.openide.util.Lookup;
 import org.openide.util.lookup.InstanceContent;
 
 /**
@@ -53,9 +52,8 @@ public class GraphedQuantityNode extends BeanNode<GraphedQuantity> implements Ch
                 return;
             }
             checked = selected;
-            CurrentFileLookupManager fileContentManager = Lookup.getDefault().lookup(CurrentFileLookupManager.class);
-            if (fileContentManager== null) return;
-            InstanceContent currentFileLookupContent = fileContentManager.getCurrentFileLookupContent();
+            InstanceContent currentFileLookupContent = FileLookupProvider.getSelectedFileLookupContent();
+            if (currentFileLookupContent== null) return;
             if (checked) {
                 currentFileLookupContent.add(quantity);
             } else {

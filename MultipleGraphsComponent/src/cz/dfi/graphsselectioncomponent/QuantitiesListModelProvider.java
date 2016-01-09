@@ -22,22 +22,7 @@ public class QuantitiesListModelProvider extends Children.Keys<GraphedQuantityNo
 
     Lookup l;
     private Lookup.Result<GraphableQuantity> graphablesResult;
-
-    public final void setCurrentFileLookup(Lookup l) {
-        if (l == this.l) {
-            return;
-        }
-        if (graphablesResult != null) {
-            this.graphablesResult.removeLookupListener(this);
-            graphablesResult = null;
-        }
-        this.l = l;
-        if (l == null) {
-            return;
-        }
-        listenToLookupChanges();
-    }
-
+    
     private void listenToLookupChanges() {
         graphablesResult = l.lookupResult(GraphableQuantity.class);
         graphablesResult.addLookupListener(this);

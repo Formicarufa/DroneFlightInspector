@@ -11,6 +11,7 @@ import org.openide.util.Lookup;
  * is available as a service through the application's global lookup.
  * @author Tomas Prochazka
  */
+@Deprecated
 public interface CurrentFileLookupProvider {
     /**
      * Returns the lookup of the selected file.
@@ -21,7 +22,7 @@ public interface CurrentFileLookupProvider {
      * Returns information about the currently selected (focused) file.
      * @return 
      */
-    @CheckForNull DataFileInfo getCurrentFileInfo();
+    @CheckForNull RecordFile getCurrentFileInfo();
     /**
      * Adds the given listener to the collection of objects,
      * that are notified if the selected file is changed.

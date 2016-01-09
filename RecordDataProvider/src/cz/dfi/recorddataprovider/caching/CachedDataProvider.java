@@ -3,12 +3,15 @@
 
 package cz.dfi.recorddataprovider.caching;
 
-import cz.dfi.recorddataprovider.CurrentFileLookupProvider;
-import cz.dfi.recorddataprovider.DataFileInfo;
-import cz.dfi.recorddataprovider.FileSelectionChangedListener;
+import cz.dfi.recorddataprovider.FileLookup;
+import cz.dfi.recorddataprovider.FileLookupProvider;
+import cz.dfi.recorddataprovider.RecordFile;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 
 /**
  * Cached data provider enables components to save/cache file specific data.
@@ -20,10 +23,11 @@ import org.openide.util.Lookup;
  * 22.11.2015
  * @param <T> Type of the saved data.
  */
-public class CachedDataProvider<T> implements FileSelectionChangedListener{
+public class CachedDataProvider<T> implements LookupListener{
 
-    private final Map<DataFileInfo,T> cachedData = new HashMap<>();
+    private final Map<RecordFile,T> cachedData = new HashMap<>();
     private final CachedDataReceiver<T> receiver;
+    private Lookup.Result<RecordFile> lookupResult;
     /**
      * Once the CachedDataProvider is instantiated, no other interaction
      * with it is required.
@@ -33,36 +37,31 @@ public class CachedDataProvider<T> implements FileSelectionChangedListener{
      */
     public  static  <T>  CachedDataProvider<T> create(CachedDataReceiver<T> receiver) {
         CachedDataProvider<T> c = new CachedDataProvider<>(receiver);
-        CurrentFileLookupProvider fileProvider = getFileLookupProvider();
-        DataFileInfo currentFileInfo = fileProvider.getCurrentFileInfo();
-        Lookup context = fileProvider.getCurrentFileLookup();
-        fileProvider.addFileSelectionChangedListener(c);
-        c.selectedFileChanged(context, currentFileInfo);
+        RecordFile currentFileInfo = FileLookupProvider.getSelectedFile();
+        Lookup context = FileLookup.getDefault();
+        c.lookupResult = context.lookupResult(RecordFile.class);
+        c.lookupResult.addLookupListener(c);
+        c.selectedFileChanged(currentFileInfo);
         return c;
     }
-
-    protected static CurrentFileLookupProvider getFileLookupProvider() {
-        CurrentFileLookupProvider fileProvider = Lookup.getDefault().lookup(CurrentFileLookupProvider.class);
-        return fileProvider;
-    }
     
+
+
     private CachedDataProvider(CachedDataReceiver<T> receiver)  {
         this.receiver=receiver;
     }
 /**
  *  Using this method the cache provider is notified that the file selection
  * has changed.
- * @param l Lookup containing the data context of this file.
  * @param file Information about the file itself (contains its ID)
  */
-    @Override
-    public final void selectedFileChanged(Lookup l, DataFileInfo file) {
+    public final void selectedFileChanged(RecordFile file) {
         if (file==null) { //iff no file is opened
             receiver.setCurrentData(null);
             return;
         }
         if (!cachedData.containsKey(file)) {
-            T data = receiver.getDataForStoring(l);
+            T data = receiver.getDataForStoring(file.getLookup());
             cachedData.put(file, data);
             file.addFileStateChangedListener(cachedData::remove);
             
@@ -70,11 +69,17 @@ public class CachedDataProvider<T> implements FileSelectionChangedListener{
         receiver.setCurrentData(cachedData.get(file));
     }
     public void deleteData() {
-        for (DataFileInfo file : cachedData.keySet()) {
+        for (RecordFile file : cachedData.keySet()) {
             file.removeFileStateChangedListener(cachedData::remove);
         }
-        getFileLookupProvider().removeFileSelectionChangedListener(this);
+        lookupResult.removeLookupListener(this);
         cachedData.clear();
+    }
+
+    @Override
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends Lookup.Item<RecordFile>> allItems = lookupResult.allItems();
+        if (allItems.isEmpty()) selectedFileChanged( null);
     }
     
     

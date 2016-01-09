@@ -4,7 +4,7 @@ package cz.dfi.datamodel.graphable;
 
 import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.TimeValuesConverter;
-import cz.dfi.recorddataprovider.CurrentFileLookupProvider;
+import cz.dfi.recorddataprovider.FileLookup;
 import java.util.Collection;
 import org.openide.util.Lookup;
 
@@ -104,12 +104,8 @@ public abstract class AbstractGraphableQuantity implements GraphableQuantity {
             return onBoardTimeValues;
         }
         //Try to convert.
-        CurrentFileLookupProvider fileProvider = Lookup.getDefault().lookup(CurrentFileLookupProvider.class);
         Collection<? extends TimeValuesConverter> converters;
-        final Lookup currentFileLookup = fileProvider.getCurrentFileLookup();
-        if (currentFileLookup == null) {
-            return null;
-        }
+        final Lookup currentFileLookup =FileLookup.getDefault();
         converters = currentFileLookup.lookupAll(TimeValuesConverter.class);
         for (TimeValuesConverter converter : converters) {
             recorderTimeValues = converter.recordTimeToBoardTime(onBoardTimeValues, !isMessageIncoming);
@@ -131,12 +127,8 @@ public abstract class AbstractGraphableQuantity implements GraphableQuantity {
             return recorderTimeValues;
         }
         //Try to convert.
-        CurrentFileLookupProvider fileProvider = Lookup.getDefault().lookup(CurrentFileLookupProvider.class);
         Collection<? extends TimeValuesConverter> converters;
-        final Lookup currentFileLookup = fileProvider.getCurrentFileLookup();
-        if (currentFileLookup == null) {
-            return null;
-        }
+        final Lookup currentFileLookup = FileLookup.getDefault();
         converters = currentFileLookup.lookupAll(TimeValuesConverter.class);
         for (TimeValuesConverter converter : converters) {
             recorderTimeValues = converter.boardTimeToRecordTime(onBoardTimeValues, !isMessageIncoming);

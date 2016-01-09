@@ -13,6 +13,7 @@ import org.openide.util.Lookup;
  * All file data are stored in the lookup, which is passed as a parameter.
  * @author Tomas Prochazka
  */
+@Deprecated
 public interface FileSelectionChangedListener {
     /**
      * This method is called by CurrentFileLookupProvider
@@ -21,5 +22,5 @@ public interface FileSelectionChangedListener {
      * @param l Lookup that contains the selected file's data, might be null.
      * @param file File that has been selected, might be null.
      */
-    void selectedFileChanged(@NullAllowed Lookup l, @NullAllowed DataFileInfo file);
+    void selectedFileChanged(@NullAllowed Lookup l, @NullAllowed RecordFile file);
 }
