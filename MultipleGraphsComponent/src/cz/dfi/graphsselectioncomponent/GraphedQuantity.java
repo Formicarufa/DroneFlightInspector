@@ -12,7 +12,8 @@ import java.util.Objects;
  * @author Tomas Prochazka
  * 21.12.2015
  */
-public class GraphedQuantity {
+public final class GraphedQuantity {
+
 
     public GraphedQuantity(GraphableQuantity quantity) {
         this.quantity = quantity;
@@ -22,7 +23,7 @@ public class GraphedQuantity {
         return translationX;
     }
 
-    public void setTranslationX(double translationX) {
+    public void setTranslationX(Double translationX) {
         this.translationX = translationX;
     }
 
@@ -30,7 +31,7 @@ public class GraphedQuantity {
         return translationY;
     }
 
-    public void setTranslationY(double translationY) {
+    public void setTranslationY(Double translationY) {
         this.translationY = translationY;
     }
 
@@ -38,7 +39,7 @@ public class GraphedQuantity {
         return scaleX;
     }
 
-    public void setScaleX(double scaleX) {
+    public void setScaleX(Double scaleX) {
         this.scaleX = scaleX;
     }
 
@@ -46,7 +47,7 @@ public class GraphedQuantity {
         return scaleY;
     }
 
-    public void setScaleY(double scaleY) {
+    public void setScaleY(Double scaleY) {
         this.scaleY = scaleY;
     }
 
@@ -63,11 +64,11 @@ public class GraphedQuantity {
     public String getQuantityUnit() {
         return quantity.getUnit();
     }
-    GraphableQuantity quantity;
-    double translationX;
-    double translationY;
-    double scaleX;
-    double scaleY;
+    public GraphableQuantity quantity;
+    double translationX=0;
+    double translationY=0;
+    double scaleX=1;
+    double scaleY=1;
     Color color;
 
     @Override

@@ -9,6 +9,7 @@ import cz.dfi.recorddataprovider.RecordFile;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -78,8 +79,9 @@ public class CachedDataProvider<T> implements LookupListener{
 
     @Override
     public void resultChanged(LookupEvent ev) {
-        Collection<? extends Lookup.Item<RecordFile>> allItems = lookupResult.allItems();
-        if (allItems.isEmpty()) selectedFileChanged( null);
+        Collection<? extends RecordFile> allInstances = lookupResult.allInstances();
+        Optional<? extends RecordFile> first = allInstances.stream().findFirst();
+        selectedFileChanged(first.isPresent()? first.get() : null);
     }
     
     

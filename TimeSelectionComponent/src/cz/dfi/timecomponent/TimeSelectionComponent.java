@@ -4,6 +4,7 @@ package cz.dfi.timecomponent;
 
 import cz.dfi.datamodel.RecordsWrapper;
 import cz.dfi.fileimporertinterface.FileImporter;
+import cz.dfi.recorddataprovider.FileLoadingRequestProcessor;
 import cz.dfi.recorddataprovider.OpenedFilesManager;
 import cz.dfi.recorddataprovider.RecordFile;
 import java.awt.BorderLayout;
@@ -12,11 +13,14 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jtimeselector.JTimeSelector;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.MultiDataObject;
 import org.openide.util.Lookup;
 import org.openide.util.LookupListener;
+import org.openide.util.RequestProcessor;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 
@@ -78,7 +82,8 @@ public class TimeSelectionComponent extends CloneableTopComponent {
     @Override
     protected void componentClosed() {
         super.componentClosed();
-        lookupResult.removeLookupListener(changeListener);
+        selected=false;
+        if (lookupResult!= null) lookupResult.removeLookupListener(changeListener);
         filesManager.fileClosed(fileInfo);
     }
 
@@ -94,7 +99,9 @@ public class TimeSelectionComponent extends CloneableTopComponent {
         fileInfo = filesManager.newFileOpened(file.getName());
         fileInfo.getLookupContent().add(fileInfo);
         setDisplayName(file.getName());
-        new Thread(() -> {
+        Runnable runnable = () -> {
+             final ProgressHandle progr =ProgressHandleFactory.createHandle("Loading file " + file.getName());
+             progr.start();
             fileImporter = getFileImporter();
             if (fileImporter == null) {
                 TimeSelectionComponent.this.close();
@@ -106,9 +113,11 @@ public class TimeSelectionComponent extends CloneableTopComponent {
             loaded=true;
             if (TimeSelectionComponent.this.selected == true) {
                 filesManager.fileSelected(fileInfo);
-                TimeSelectionComponent.this.loadTimelineLayers();
             }
-        }).run();
+            TimeSelectionComponent.this.loadTimelineLayers();
+            progr.finish();
+        };
+        FileLoadingRequestProcessor.getDefault().post(runnable);
 
     }
 
@@ -188,6 +197,7 @@ public class TimeSelectionComponent extends CloneableTopComponent {
         for (RecordsWrapper w : lookupAll) {
             jTimeSelector.addTimeValuesLayer(w.getName(), w.getTimeOfRecordValues());
         }
+        jTimeSelector.requireRepaint();
     }
     private Lookup.Result<RecordsWrapper> lookupResult;
     LookupListener changeListener = (evt ) -> {

@@ -2,13 +2,22 @@
  */
 package cz.dfi.multiplegraphscomponent;
 
+import cz.dfi.graphsselectioncomponent.GraphedQuantity;
+import cz.dfi.recorddataprovider.FileLookup;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYDataset;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
@@ -39,17 +48,27 @@ import org.openide.util.NbBundle.Messages;
 public final class MultipleGraphsTopComponent extends TopComponent {
 
     protected final JFreeChart chart;
-    protected final XYDataset dataset=null;
+    protected final MultipleModifiableGraphsDataset dataset;
+    private final Lookup.Result<GraphedQuantity> quantitiesSearch;
+    LookupListener listener = this::resultChanged;
+
     public MultipleGraphsTopComponent() {
         initComponents();
         setName(Bundle.CTL_MultipleGraphsTopComponent());
         setToolTipText(Bundle.HINT_MultipleGraphsTopComponent());
-        chart = ChartFactory.createXYLineChart(null, "time", "values", dataset,PlotOrientation.VERTICAL,false,true,false);
-        
-
+        Lookup fileLookup = FileLookup.getDefault();
+        quantitiesSearch = fileLookup.lookupResult(GraphedQuantity.class);
+        quantitiesSearch.addLookupListener(listener);
+        dataset = new MultipleModifiableGraphsDataset();
+        //chart = ChartFactory.createXYLineChart(null, "time", "values", dataset, PlotOrientation.VERTICAL, false, true, false);
+        chart = ChartFactory.createTimeSeriesChart(null, "time", "values", dataset, true, true, false);
+        ChartPanel p = new ChartPanel(chart);
+        DateAxis axis = (DateAxis) ((XYPlot) chart.getPlot()).getDomainAxis();
+        chart.getXYPlot().setDomainPannable(true);
+        chart.getXYPlot().setRangePannable(true);
+        axis.setDateFormatOverride(new SimpleDateFormat("HH:mm:ss"));
+        add(p);
     }
- 
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -59,16 +78,7 @@ public final class MultipleGraphsTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -93,5 +103,20 @@ public final class MultipleGraphsTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    public void resultChanged(LookupEvent ev) {
+        final Collection<? extends GraphedQuantity> allInstances = quantitiesSearch.allInstances();
+        dataset.resultChanged(allInstances);
+        XYPlot plot = (XYPlot) chart.getPlot();
+        XYItemRenderer renderer = plot.getRenderer();
+        int i = 0;
+        for (GraphedQuantity q : allInstances) {
+            if (q.getColor() != null) {
+                renderer.setSeriesPaint(i, q.getColor());
+            }
+            i++;
+        }
+
     }
 }

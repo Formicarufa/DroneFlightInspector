@@ -56,8 +56,7 @@ public final class GraphsSelectionTopComponent extends TopComponent implements E
         listView = new OutlineView();
         associateLookup(ExplorerUtils.createLookup(em, getActionMap()));
         jPanel3.add(listView);
-        Lookup l = FileLookup.getDefault();
-        listOfGraphables = new QuantitiesListModelProvider(l);
+        listOfGraphables = new QuantitiesListModelProvider();
         rootNode = new RootNode(listOfGraphables);
         em.setRootContext(rootNode);
 

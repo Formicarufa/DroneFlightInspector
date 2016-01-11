@@ -60,6 +60,8 @@ public final class MotorsGraphTopComponent extends TopComponent implements Cache
         ChartPanel cp = new ChartPanel(chart);
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(cp);
+        chart.getXYPlot().setDomainPannable(true);
+        chart.getXYPlot().setRangePannable(true);
 
     }
 
@@ -139,10 +141,10 @@ public final class MotorsGraphTopComponent extends TopComponent implements Cache
         for (int i = 0; i < flightRecords.size(); i++) {
             FlightDataRecord r = flightRecords.get(i);
             times[i] = r.droneTime / 1_000_000;
-            graphValues[0][1][i] = r.motor1*100 / 255.0;
-            graphValues[1][1][i] = r.motor2*100 / 255.0;
-            graphValues[2][1][i] = r.motor3*100 / 255.0;
-            graphValues[3][1][i] = r.motor4*100 / 255.0;
+            graphValues[0][1][i] = r.motor1 * 100 / 255.0;
+            graphValues[1][1][i] = r.motor2 * 100 / 255.0;
+            graphValues[2][1][i] = r.motor3 * 100 / 255.0;
+            graphValues[3][1][i] = r.motor4 * 100 / 255.0;
         }
         return graphValues;
     }
@@ -155,10 +157,10 @@ public final class MotorsGraphTopComponent extends TopComponent implements Cache
         dataSet.removeSeries("motor3");
         dataSet.removeSeries("motor4");
         if (data != null) {
-            dataSet.addSeries("motor1",data[0]);
-            dataSet.addSeries("motor2",data[1]);
-            dataSet.addSeries("motor3",data[2]);
-            dataSet.addSeries("motor4",data[3]);
+            dataSet.addSeries("motor1", data[0]);
+            dataSet.addSeries("motor2", data[1]);
+            dataSet.addSeries("motor3", data[2]);
+            dataSet.addSeries("motor4", data[3]);
         }
 
     }

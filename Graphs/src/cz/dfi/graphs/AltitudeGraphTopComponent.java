@@ -56,6 +56,8 @@ public final class AltitudeGraphTopComponent extends TopComponent implements Cac
         ChartPanel cp = new ChartPanel(chart);
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(cp);
+        chart.getXYPlot().setDomainPannable(true);
+        chart.getXYPlot().setRangePannable(true);
     }
 
     @Override
@@ -116,7 +118,7 @@ public final class AltitudeGraphTopComponent extends TopComponent implements Cac
         for (int i = 0; i < r.size(); i++) {
             FlightDataRecord rec = r.get(i);
             graphValues[0][i] = rec.droneTime / 1_000_000;
-            graphValues[1][i] = rec.altitude/10;
+            graphValues[1][i] = rec.altitude / 10;
         }
         return graphValues;
     }

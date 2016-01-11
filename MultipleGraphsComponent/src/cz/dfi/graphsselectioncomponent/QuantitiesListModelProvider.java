@@ -3,10 +3,13 @@
 package cz.dfi.graphsselectioncomponent;
 
 import cz.dfi.datamodel.graphable.GraphableQuantity;
+import cz.dfi.recorddataprovider.FileLookup;
+import java.awt.Paint;
 import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.jfree.chart.ChartColor;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
@@ -22,15 +25,15 @@ public class QuantitiesListModelProvider extends Children.Keys<GraphedQuantityNo
 
     Lookup l;
     private Lookup.Result<GraphableQuantity> graphablesResult;
-    
+
     private void listenToLookupChanges() {
         graphablesResult = l.lookupResult(GraphableQuantity.class);
         graphablesResult.addLookupListener(this);
         resultChanged(null);
     }
 
-    public QuantitiesListModelProvider(Lookup l) {
-        this.l = l;
+    public QuantitiesListModelProvider() {
+        this.l = FileLookup.getDefault();
     }
 
     @Override
@@ -54,28 +57,28 @@ public class QuantitiesListModelProvider extends Children.Keys<GraphedQuantityNo
         List<GraphedQuantityNode> result = new ArrayList<>();
         for (GraphableQuantity q : possible) {
             GraphedQuantity graphedQuantity = new GraphedQuantity(q);
-            boolean checked=false;
+            boolean checked = false;
             for (GraphedQuantity current : currentlyGraphed) {
                 if (current.equals(graphedQuantity)) {
                     graphedQuantity = current;
-                    checked=true;
+                    checked = true;
                     break;
                 }
             }
-            try {
-                result.add(new GraphedQuantityNode(graphedQuantity,checked));
-            } catch (IntrospectionException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
+            result.add(GraphedQuantityNode.create(graphedQuantity, checked));
 
+        }
+        ColorAssignment ca = new ColorAssignment(result);
+        ca.assignToAll(result);
         setKeys(result);
     }
 
+    public void assignFreeColor(GraphedQuantity q) {
+
+    }
+
     public Collection<GraphedQuantity> currentlyGraphedQuantities() {
-        if (l == null) {
-            return new ArrayList<>(0);
-        }
+
         Collection<? extends GraphedQuantity> graphed = l.lookupAll(GraphedQuantity.class);
         ArrayList<GraphedQuantity> res = new ArrayList<>(graphed.size());
         graphed.stream().forEach((g) -> {

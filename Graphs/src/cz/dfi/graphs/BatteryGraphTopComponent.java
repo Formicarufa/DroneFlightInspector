@@ -44,9 +44,11 @@ import org.openide.util.NbBundle.Messages;
     "HINT_BatteryGraphTopComponent=This is a BatteryGraph window"
 })
 public final class BatteryGraphTopComponent extends TopComponent implements CachedDataReceiver<double[][]> {
+
     private CachedDataProvider<double[][]> cachedDataProvider;
     protected final JFreeChart chart;
     protected final DefaultXYDataset dataSet;
+
     public BatteryGraphTopComponent() {
         initComponents();
         setName(Bundle.CTL_BatteryGraphTopComponent());
@@ -58,6 +60,8 @@ public final class BatteryGraphTopComponent extends TopComponent implements Cach
         ChartPanel cp = new ChartPanel(chart);
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(cp);
+        chart.getXYPlot().setDomainPannable(true);
+        chart.getXYPlot().setRangePannable(true);
     }
 
     /**
@@ -110,7 +114,8 @@ public final class BatteryGraphTopComponent extends TopComponent implements Cach
     protected void componentShowing() {
         super.componentShowing();
     }
-      @Override
+
+    @Override
     public double[][] getDataForStoring(Lookup currentContext) {
         List<FlightDataRecord> r = GraphsCommon.getFlightRecords(currentContext);
         graphValues = new double[2][r.size()];
