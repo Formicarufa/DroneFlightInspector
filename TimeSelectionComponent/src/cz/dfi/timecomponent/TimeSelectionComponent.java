@@ -14,13 +14,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jtimeselector.JTimeSelector;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.MultiDataObject;
 import org.openide.util.Lookup;
 import org.openide.util.LookupListener;
-import org.openide.util.RequestProcessor;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 
@@ -100,7 +98,7 @@ public class TimeSelectionComponent extends CloneableTopComponent {
         fileInfo.getLookupContent().add(fileInfo);
         setDisplayName(file.getName());
         Runnable runnable = () -> {
-             final ProgressHandle progr =ProgressHandleFactory.createHandle("Loading file " + file.getName());
+             final ProgressHandle progr =ProgressHandle.createHandle("Loading file " + file.getName());
              progr.start();
             fileImporter = getFileImporter();
             if (fileImporter == null) {
