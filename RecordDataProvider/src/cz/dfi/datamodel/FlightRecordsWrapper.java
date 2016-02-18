@@ -41,7 +41,7 @@ public class FlightRecordsWrapper implements RecordsWrapper {
         table[0] = getOnBoardTimeValues();
         table[1] = new double[records.size()];
         for (int i = 0; i < records.size(); i++) {
-            table[1][i] = records.get(i).altitude / 10;
+            table[1][i] = records.get(i).altitude / 10.0;
         }
         return table;
     }
