@@ -4,6 +4,8 @@ package cz.dfi.multiplegraphscomponent;
 
 import cz.dfi.graphsselectioncomponent.GraphedQuantity;
 import cz.dfi.recorddataprovider.FileLookup;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import org.jfree.chart.ChartFactory;
@@ -106,8 +108,15 @@ public final class MultipleGraphsTopComponent extends TopComponent {
     }
 
     public void resultChanged(LookupEvent ev) {
-        final Collection<? extends GraphedQuantity> allInstances = quantitiesSearch.allInstances();
+        removeChangeListeners();
+        allInstances = quantitiesSearch.allInstances();
+        addChangeListeners();
+        setColors();
         dataset.resultChanged(allInstances);
+
+    }
+
+    private void setColors() {
         XYPlot plot = (XYPlot) chart.getPlot();
         XYItemRenderer renderer = plot.getRenderer();
         int i = 0;
@@ -117,6 +126,25 @@ public final class MultipleGraphsTopComponent extends TopComponent {
             }
             i++;
         }
-
     }
+    private Collection<? extends GraphedQuantity> allInstances;
+
+    private void removeChangeListeners() {
+        if (allInstances==null) return;
+        for (GraphedQuantity q : allInstances) {
+            q.removePropertyChangedListener(propertyListener);
+        }
+    }
+
+    private void addChangeListeners() {
+        for (GraphedQuantity q : allInstances) {
+            q.addPropertyChangedListener(propertyListener);
+        }
+    }
+    PropertyChangeListener propertyListener = (PropertyChangeEvent evt) -> {
+        if (evt.getPropertyName().equals("color")) {
+            setColors();
+        }
+        MultipleGraphsTopComponent.this.dataset.graphPropertyChanged();
+    };
 }

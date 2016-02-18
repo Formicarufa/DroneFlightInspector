@@ -3,14 +3,10 @@
 package cz.dfi.multiplegraphscomponent;
 
 import cz.dfi.graphsselectioncomponent.GraphedQuantity;
-import cz.dfi.recorddataprovider.FileLookup;
 import java.util.Collection;
 import org.jfree.data.DomainOrder;
 import org.jfree.data.general.DatasetChangeEvent;
 import org.jfree.data.xy.AbstractXYDataset;
-import org.openide.util.Lookup;
-import org.openide.util.LookupEvent;
-import org.openide.util.LookupListener;
 
 /**
  *
@@ -79,6 +75,9 @@ public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
         }
         notifyListeners(new DatasetChangeEvent(this, this));
 
+    }
+    public void graphPropertyChanged() {
+        notifyListeners(new DatasetChangeEvent(this,this));
     }
 
 }
