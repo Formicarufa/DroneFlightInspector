@@ -15,6 +15,9 @@ import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
 /**
+ * GraphQuantityNode is responsible for providing the information about the
+ * graph quantity to the components that display the information and let user to
+ * update it. (Modify the resulting graph.)
  *
  * @author Tomas Prochazka 22.12.2015
  */
@@ -41,7 +44,7 @@ public class GraphedQuantityNode extends AbstractNode implements CheckableNode {
         n.content.add(n);
         return n;
     }
-    
+
     public static GraphedQuantityNode create(GraphedQuantity quantity) {
         return create(quantity, false);
     }
@@ -123,5 +126,6 @@ public class GraphedQuantityNode extends AbstractNode implements CheckableNode {
         }
         return sheet;
     }
+  
 
 }

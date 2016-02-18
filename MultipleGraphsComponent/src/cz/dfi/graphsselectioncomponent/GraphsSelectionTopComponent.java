@@ -2,7 +2,6 @@
  */
 package cz.dfi.graphsselectioncomponent;
 
-import cz.dfi.recorddataprovider.FileLookup;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -11,7 +10,6 @@ import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.propertysheet.PropertySheetView;
 import org.openide.explorer.view.OutlineView;
 import org.openide.nodes.AbstractNode;
-import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
@@ -59,6 +57,7 @@ public final class GraphsSelectionTopComponent extends TopComponent implements E
         listOfGraphables = new QuantitiesListModelProvider();
         rootNode = new RootNode(listOfGraphables);
         em.setRootContext(rootNode);
+       
 
     }
 
