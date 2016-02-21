@@ -43,7 +43,7 @@ public interface RecordsWrapper {
      * Typically, though, there is no reason these values should not be included.
      * @return list of time values in the ascending order, might also return null
      */
-    @CheckForNull double[] getTimeOfRecordValues();
+    @CheckForNull long[] getTimeOfRecordValues();
     /**
      * The time information of each record can come from two sources:
      * Either the time stamp is added to the message on the board of the drone

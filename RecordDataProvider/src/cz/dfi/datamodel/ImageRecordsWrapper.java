@@ -25,14 +25,14 @@ public class ImageRecordsWrapper implements RecordsWrapper {
     public String getName() {
         return "Video stream";
     }
-    double[] recordedTimeValues;
+    long[] recordedTimeValues;
 
     @Override
-    public double[] getTimeOfRecordValues() {
+    public long[] getTimeOfRecordValues() {
         if (recordedTimeValues == null) {
-            recordedTimeValues = new double[records.size()];
+            recordedTimeValues = new long[records.size()];
             for (int i = 0; i < records.size(); i++) {
-                recordedTimeValues[i] = records.get(i).time / 1_000_000.0;
+                recordedTimeValues[i] = records.get(i).time;
             }
         }
         return recordedTimeValues;

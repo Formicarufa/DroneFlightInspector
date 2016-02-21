@@ -23,22 +23,22 @@ public class DoubleQuantity  extends AbstractGraphableQuantity{
         this.values = values;
     }
 
-    public DoubleQuantity(double[] values, String name, String unit, double[] onBoardTimeValues, double[] recorderTimeValues) {
+    public DoubleQuantity(double[] values, String name, String unit, double[] onBoardTimeValues, long[] recorderTimeValues) {
         super(name, unit, onBoardTimeValues, recorderTimeValues);
         this.values = values;
     }
 
-    public DoubleQuantity(double[] values, String name, String unit, double[] onBoardTimeValues, double[] recorderTimeValues, boolean isMessageIncoming) {
+    public DoubleQuantity(double[] values, String name, String unit, double[] onBoardTimeValues, long[] recorderTimeValues, boolean isMessageIncoming) {
         super(name, unit, onBoardTimeValues, recorderTimeValues, isMessageIncoming);
         this.values = values;
     }
 
-    public DoubleQuantity(double[] values, double[] recorderTimeValues, String name, String unit) {
+    public DoubleQuantity(double[] values, long[] recorderTimeValues, String name, String unit) {
         super(recorderTimeValues, name, unit);
         this.values = values;
     }
 
-    public DoubleQuantity(double[] values, double[] recorderTimeValues, String name, String unit, boolean isMessageIncoming) {
+    public DoubleQuantity(double[] values, long[] recorderTimeValues, String name, String unit, boolean isMessageIncoming) {
         super(recorderTimeValues, name, unit, isMessageIncoming);
         this.values = values;
     }

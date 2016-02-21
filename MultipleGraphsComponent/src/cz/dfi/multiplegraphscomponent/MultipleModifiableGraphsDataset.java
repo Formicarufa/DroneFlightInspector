@@ -15,7 +15,7 @@ import org.jfree.data.xy.AbstractXYDataset;
 public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
 
     GraphedQuantity[] quantities;
-    double[][] timeValues;
+    long[][] timeValues;
     double[][] values;
  
     private int seriesCount;
@@ -44,7 +44,7 @@ public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
     @Override
     public Number getX(int series, int item) {
         GraphedQuantity q = quantities[series];
-        final double[] t = timeValues[series];
+        final long[] t = timeValues[series];
         final double t0 = t[0];
         return t0+(t[item]-t0) * q.getScaleX() + q.getTranslationX();
     }
@@ -63,7 +63,7 @@ public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
     public void resultChanged( Collection<? extends GraphedQuantity> quantitiesList) {
         seriesCount = quantitiesList.size();
         quantities = new GraphedQuantity[seriesCount];
-        timeValues = new double[seriesCount][];
+        timeValues = new long[seriesCount][];
         values = new double[seriesCount][];
         int i = 0;
         for (GraphedQuantity q : quantitiesList) {

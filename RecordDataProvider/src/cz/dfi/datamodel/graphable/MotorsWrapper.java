@@ -12,7 +12,7 @@ package cz.dfi.datamodel.graphable;
  */
 public abstract class MotorsWrapper extends DoubleQuantity {
 
-    public MotorsWrapper(double[] values, String name, double[] onBoardTimeValues, double[] recorderTimeValues) {
+    public MotorsWrapper(double[] values, String name, double[] onBoardTimeValues, long[] recorderTimeValues) {
         super(values, name, "percent", onBoardTimeValues, recorderTimeValues);
     }
 }

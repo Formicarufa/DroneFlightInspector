@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
  * 8.12.2015
  */
 public class ImageDataRecord {
-    public long time;
+    public long time; //nsec
     public BufferedImage image;
 
     public ImageDataRecord(long time, BufferedImage image) {

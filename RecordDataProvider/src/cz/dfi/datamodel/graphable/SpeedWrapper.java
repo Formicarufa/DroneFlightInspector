@@ -10,7 +10,7 @@ package cz.dfi.datamodel.graphable;
  */
 public abstract class SpeedWrapper extends DoubleQuantity {
 
-    public SpeedWrapper(double[] values, String name, String unit, double[] onBoardTimeValues, double[] recorderTimeValues) {
+    public SpeedWrapper(double[] values, String name, String unit, double[] onBoardTimeValues, long[] recorderTimeValues) {
         super(values, name, unit, onBoardTimeValues, recorderTimeValues);
     }
 }
