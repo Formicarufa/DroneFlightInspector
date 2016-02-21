@@ -10,9 +10,9 @@ import java.util.List;
  */
 public class FlightRecordsWrapper implements RecordsWrapper {
 
-    private List<FlightDataRecord> records;
+    private final List<FlightDataRecord> records;
     private double[] timeValues;
-    private double[] recordedTimeValues;
+    private long[] recordedTimeValues;
 
     public FlightRecordsWrapper(List<FlightDataRecord> records) {
         this.records = records;
@@ -115,11 +115,11 @@ public class FlightRecordsWrapper implements RecordsWrapper {
     }
 
     @Override
-    public double[] getTimeOfRecordValues() {
+    public long[] getTimeOfRecordValues() {
         if (recordedTimeValues == null) {
-            recordedTimeValues = new double[records.size()];
+            recordedTimeValues = new long[records.size()];
             for (int i = 0; i < records.size(); i++) {
-                recordedTimeValues[i] = records.get(i).time/1_000_000.0;
+                recordedTimeValues[i] = records.get(i).time;
             }
         }
         return recordedTimeValues;
