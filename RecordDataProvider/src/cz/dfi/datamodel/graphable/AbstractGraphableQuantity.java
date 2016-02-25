@@ -15,7 +15,7 @@ import org.openide.util.Lookup;
 public abstract class AbstractGraphableQuantity implements GraphableQuantity {
 
     protected String name;
-    protected double[] onBoardTimeValues;
+    protected long[] onBoardTimeValues;
     protected long[] recorderTimeValues;
     protected TimeStampType originalTimeStamp;
     protected boolean isMessageIncoming;
@@ -30,7 +30,7 @@ public abstract class AbstractGraphableQuantity implements GraphableQuantity {
      * @param unit
      * @param onBoardTimeValues
      */
-    public AbstractGraphableQuantity(String name, String unit, double[] onBoardTimeValues) {
+    public AbstractGraphableQuantity(String name, String unit, long[] onBoardTimeValues) {
         this.name = name;
         this.onBoardTimeValues = onBoardTimeValues;
         this.originalTimeStamp = TimeStampType.OnBoardTime;
@@ -38,7 +38,7 @@ public abstract class AbstractGraphableQuantity implements GraphableQuantity {
         this.unit=unit;
     }
 
-    public AbstractGraphableQuantity(String name, String unit, double[] onBoardTimeValues, boolean isMessageIncoming) {
+    public AbstractGraphableQuantity(String name, String unit, long[] onBoardTimeValues, boolean isMessageIncoming) {
         this.name = name;
         this.onBoardTimeValues = onBoardTimeValues;
         this.isMessageIncoming = isMessageIncoming;
@@ -56,7 +56,7 @@ public abstract class AbstractGraphableQuantity implements GraphableQuantity {
      * @param onBoardTimeValues
      * @param recorderTimeValues
      */
-    public AbstractGraphableQuantity(String name, String unit, double[] onBoardTimeValues, long[] recorderTimeValues) {
+    public AbstractGraphableQuantity(String name, String unit, long[] onBoardTimeValues, long[] recorderTimeValues) {
         this.name = name;
         this.onBoardTimeValues = onBoardTimeValues;
         this.recorderTimeValues = recorderTimeValues;
@@ -65,7 +65,7 @@ public abstract class AbstractGraphableQuantity implements GraphableQuantity {
         this.unit=unit;
     }
 
-    public AbstractGraphableQuantity(String name, String unit, double[] onBoardTimeValues, long[] recorderTimeValues, boolean isMessageIncoming) {
+    public AbstractGraphableQuantity(String name, String unit, long[] onBoardTimeValues, long[] recorderTimeValues, boolean isMessageIncoming) {
         this.name = name;
         this.onBoardTimeValues = onBoardTimeValues;
         this.recorderTimeValues = recorderTimeValues;
@@ -99,7 +99,7 @@ public abstract class AbstractGraphableQuantity implements GraphableQuantity {
     }
 
     @Override
-    public double[] getOnBoardTimeValues() {
+    public long[] getOnBoardTimeValues() {
         if (onBoardTimeValues != null) {
             return onBoardTimeValues;
         }

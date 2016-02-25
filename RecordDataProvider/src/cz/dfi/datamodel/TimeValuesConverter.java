@@ -19,9 +19,9 @@ public interface TimeValuesConverter {
      * @param outcoming
      * @return 
      */
-    Long boardTimeToRecordTime(double time, boolean outcoming);
+    Long boardTimeToRecordTime(long time, boolean outcoming);
     
-    default long[] boardTimeToRecordTime(double[]times, boolean outcoming) {
+    default long[] boardTimeToRecordTime(long[] times, boolean outcoming) {
         long[] res = new long[times.length];
         for (int i = 0; i < times.length; i++) {
             Long l = boardTimeToRecordTime(times[i], outcoming);
@@ -41,13 +41,13 @@ public interface TimeValuesConverter {
      * @param outcoming
      * @return 
      */
-    Double recordTimeToBoardTime(double time, boolean outcoming);
-    default double[] recordTimeToBoardTime(long[] times, boolean outcoming){
-        double[] res = new double[times.length];
+    Long recordTimeToBoardTime(long time, boolean outcoming);
+    default long[] recordTimeToBoardTime(long[] times, boolean outcoming){
+        long[] res = new long[times.length];
         for (int i = 0; i < times.length; i++) {
-            Double d = recordTimeToBoardTime(times[i], outcoming);
-            if (d==null) return null;
-            res[i]=d;
+            Long l = recordTimeToBoardTime(times[i], outcoming);
+            if (l==null) return null;
+            res[i]=l;
         }
         return res;
     }

@@ -10,7 +10,7 @@ package cz.dfi.datamodel.graphable;
  */
 public class AltitudeWrapper extends DoubleQuantity {
 
-        public AltitudeWrapper(double[] values, String unit, double[] onBoardTimeValues, long[] recorderTimeValues) {
+        public AltitudeWrapper(double[] values, String unit, long[] onBoardTimeValues, long[] recorderTimeValues) {
             super(values, "Altitude", unit, onBoardTimeValues, recorderTimeValues);
         }
     }

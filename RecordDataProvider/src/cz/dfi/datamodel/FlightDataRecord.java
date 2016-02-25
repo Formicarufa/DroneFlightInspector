@@ -10,7 +10,8 @@ public class FlightDataRecord {
 
     /**
      * Time in nanoseconds since epoch (1970)
-     * (at the moment when the message was recorded.)
+     * (at the moment when the     * Time in nanoseconds since epoch (1970)
+ message was recorded.)
      */
     public long time;
     public float batteryPercent;

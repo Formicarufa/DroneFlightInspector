@@ -17,7 +17,7 @@ public class ImageRecordsWrapper implements RecordsWrapper {
     }
 
     @Override
-    public double[] getOnBoardTimeValues() {
+    public long[] getOnBoardTimeValues() {
         return null;
     }
 

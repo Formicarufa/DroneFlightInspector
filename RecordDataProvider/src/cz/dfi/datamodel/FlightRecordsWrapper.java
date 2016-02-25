@@ -2,6 +2,7 @@
  */
 package cz.dfi.datamodel;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
 public class FlightRecordsWrapper implements RecordsWrapper {
 
     private final List<FlightDataRecord> records;
-    private double[] timeValues;
+    private long[] timeValues;
     private long[] recordedTimeValues;
 
     public FlightRecordsWrapper(List<FlightDataRecord> records) {
@@ -32,13 +33,14 @@ public class FlightRecordsWrapper implements RecordsWrapper {
      * contains time value in seconds and double[1][i] contains altitude in time
      * "double[0][i]" in centimeters. Time values in the list are in the
      * ascending order.
-     *
+     * @deprecated double not used to measure time anymore!
      * @return
      */
+    @Deprecated
     public double[][] getAltitudeInTime() {
         double[][] table;
         table = new double[2][];
-        table[0] = getOnBoardTimeValues();
+        table[0] = Arrays.stream(getOnBoardTimeValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         for (int i = 0; i < records.size(); i++) {
             table[1][i] = records.get(i).altitude / 10.0;
@@ -53,11 +55,12 @@ public class FlightRecordsWrapper implements RecordsWrapper {
      * @return
      */
     @Override
-    public double[] getOnBoardTimeValues() {
+    public long[] getOnBoardTimeValues() {
         if (timeValues == null) {
-            timeValues = new double[records.size()];
+            timeValues = new long[records.size()];
             for (int i = 0; i < records.size(); i++) {
-                timeValues[i] = records.get(i).droneTime / 1_000_000;
+                // conversion from milisecons (float) to nanoseconds (long):
+                timeValues[i] = Math.round(records.get(i).droneTime * 1_000_0000); 
             }
         }
         return timeValues;
@@ -68,12 +71,13 @@ public class FlightRecordsWrapper implements RecordsWrapper {
      * Format: time t1 t2 t3 motor 1 [0][1] [0][2] [0][3] ... motor 2 [1][1]
      * [1][2] [1][3] ... motor 3 [2][1] [2][2] [2][3] ... motor 4 [3][1] [3][2]
      * [3][3] ...
-     *
+     *@deprecated time no longer represented as double
      * @return double[5][#_of_records]
      */
+    @Deprecated
     public double[][] getMotorsPower() {
         double[][] table = new double[5][];
-        table[0] = getOnBoardTimeValues();
+        table[0] = Arrays.stream(getOnBoardTimeValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         table[2] = new double[records.size()];
         table[3] = new double[records.size()];
@@ -93,11 +97,13 @@ public class FlightRecordsWrapper implements RecordsWrapper {
      * velocity in y [1][1] [1][2] [1][3] ... velocity in z [2][1] [2][2] [2][3]
      * ...
      *
+     * @deprecated time no longer represented as double
      * @return
      */
+    @Deprecated
     public double[][] getVelocities() {
         double[][] table = new double[4][];
-        table[0] = getOnBoardTimeValues();
+        table[0] = Arrays.stream(getOnBoardTimeValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         table[2] = new double[records.size()];
         table[3] = new double[records.size()];

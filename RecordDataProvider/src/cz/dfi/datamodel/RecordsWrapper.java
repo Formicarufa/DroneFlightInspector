@@ -33,7 +33,7 @@ public interface RecordsWrapper {
      * the {@link #getOriginalTimeStampSource() }  method.
      * @return list of time values in the ascending order, might also return null
      */
-    @CheckForNull double[] getOnBoardTimeValues();
+    @CheckForNull long[] getOnBoardTimeValues();
     String getName();
     /**
      * Gets a list of time stamps of the recorded values, 
