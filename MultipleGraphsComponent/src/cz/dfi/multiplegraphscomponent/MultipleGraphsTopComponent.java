@@ -6,6 +6,7 @@ import cz.dfi.graphsselectioncomponent.GraphedQuantity;
 import cz.dfi.recorddataprovider.FileLookup;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import org.jfree.chart.ChartFactory;
@@ -68,8 +69,10 @@ public final class MultipleGraphsTopComponent extends TopComponent {
         DateAxis axis = (DateAxis) ((XYPlot) chart.getPlot()).getDomainAxis();
         chart.getXYPlot().setDomainPannable(true);
         chart.getXYPlot().setRangePannable(true);
-        axis.setDateFormatOverride(new SimpleDateFormat("HH:mm:ss"));
+        axis.setDateFormatOverride(new SimpleDateFormat("HH:mm:ss.SSS"));
         add(p);
+       // TODO: have to write own mouse wheel zoom-in, zoom-out control, because the one of JFreeChart is buggy.
+       // p.setMouseWheelEnabled(true);
     }
 
     /**

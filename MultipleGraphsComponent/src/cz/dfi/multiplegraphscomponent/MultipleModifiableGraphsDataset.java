@@ -45,8 +45,9 @@ public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
     public Number getX(int series, int item) {
         GraphedQuantity q = quantities[series];
         final long[] t = timeValues[series];
-        final double t0 = t[0];
-        return t0+(t[item]-t0) * q.getScaleX() + q.getTranslationX();
+        final long t0 = t[0];
+        final double res = (t0+(t[item]-t0) * q.getScaleX())/1_000_000 + q.getTranslationX(); // time is converted to millis
+        return res;
     }
 
     @Override

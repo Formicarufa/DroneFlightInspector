@@ -104,7 +104,7 @@ public class GraphedQuantityNode extends AbstractNode implements CheckableNode {
             colorProp.setDisplayName("Line color:");
             colorProp.setShortDescription("The color of the line on the chart.");
             modifications.put(colorProp);
-            Property<Double> transXProp = new PropertySupport.Reflection<>(quantity, Double.class, "translationX");
+            Property<Long> transXProp = new PropertySupport.Reflection<>(quantity, Long.class, "translationX");
             transXProp.setDisplayName("Translation in x:");
             transXProp.setShortDescription("Translation of the graph in the x axis.");
             modifications.put(transXProp);

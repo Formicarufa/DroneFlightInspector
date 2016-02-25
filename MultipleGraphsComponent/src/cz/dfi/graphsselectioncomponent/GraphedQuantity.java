@@ -18,7 +18,7 @@ import java.util.Objects;
 public final class GraphedQuantity {
 
     public GraphableQuantity quantity;
-    private double translationX = 0;
+    private long translationX = 0;
     private double translationY = 0;
     private double scaleX = 1;
     private double scaleY = 1;
@@ -29,11 +29,11 @@ public final class GraphedQuantity {
         this.quantity = quantity;
     }
 
-    public double getTranslationX() {
+    public long getTranslationX() {
         return translationX;
     }
 
-    public void setTranslationX(Double translationX) {
+    public void setTranslationX(Long translationX) {
         Object old = this.translationX;
         this.translationX = translationX;
         fireEvent("translationX", old, translationX);
