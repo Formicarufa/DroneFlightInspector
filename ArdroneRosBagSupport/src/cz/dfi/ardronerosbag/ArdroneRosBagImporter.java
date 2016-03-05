@@ -21,6 +21,7 @@ import rosbagreader.RosMessageData;
 import rosbagreader.RosStandardMessageHeader;
 import rosbagreader.RosbagMessageDataParser;
 import rosbagreader.RosbagReader;
+import rosbagreader.Vector3;
 import rosbagreader.exceptions.InvalidFieldValueRosbagException;
 import rosbagreader.exceptions.InvalidRosbagFormatException;
 import rosbagreader.exceptions.RequiredFieldMissingRosbagException;
@@ -60,7 +61,7 @@ public class ArdroneRosBagImporter implements RosbagImporter {
 
         private final List<FlightDataRecord> records;
         private final List<ImageDataRecord> images = new ArrayList<>();
-
+        
         private ArdroneRosBagMessageParser(List<FlightDataRecord> records) {
             this.records = records;
         }
@@ -69,9 +70,10 @@ public class ArdroneRosBagImporter implements RosbagImporter {
         public void parseMessageData(RosMessageData rmd) throws IOException, UnexpectedEndOfRosbagFileException {
             if ("/ardrone/navdata".equals(rmd.getTopic())) {
                 parseNavData(rmd);
-            }
-            if ("/ardrone/image_raw".equals(rmd.getTopic())) {
+            } else if ("/ardrone/image_raw".equals(rmd.getTopic())) {
                 parseImage(rmd);
+            } else if ("/geometry_msgs/Twist".equals(rmd.getTopic())) {
+                parseCommands(rmd);
             }
         }
 
@@ -147,6 +149,29 @@ public class ArdroneRosBagImporter implements RosbagImporter {
                 }
             }
             images.add(new ImageDataRecord(header.stamp.getTimeAsNanos(),i));
+        }
+        /**
+         * Forward/backward movement.
+         */
+        private List<Double> pitch= new ArrayList<>();
+        /**
+         * Leftward/rightward movement.
+         */
+        private List<Double> roll = new ArrayList<>();
+        /**
+         * Rotation 
+         */
+        private List<Double> yaw= new ArrayList<>();
+        private List<Double> vertical_speed = new ArrayList<>();
+        
+        private void parseCommands(RosMessageData rmd) throws IOException, UnexpectedEndOfRosbagFileException {
+            Vector3 linear = rmd.readVector3();
+            pitch.add(linear.x);
+            roll.add(linear.y);
+            vertical_speed.add(linear.z);
+            Vector3 angular = rmd.readVector3();
+            yaw.add(angular.z);
+            
         }
     }
 

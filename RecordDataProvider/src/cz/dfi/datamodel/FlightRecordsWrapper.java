@@ -2,19 +2,25 @@
  */
 package cz.dfi.datamodel;
 
+import cz.dfi.datamodel.series.SeriesGroupWrapper;
+import cz.dfi.datamodel.series.SeriesWrapper;
+import cz.dfi.datamodel.series.TimeStampArray;
+import cz.dfi.datamodel.values.ValueWrapper;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
  *
  * @author Tomas Prochazka 22.11.2015
  */
-public class FlightRecordsWrapper implements RecordsWrapper {
+public class FlightRecordsWrapper implements SeriesWrapper {
 
     private final List<FlightDataRecord> records;
-    private long[] timeValues;
-    private long[] recordedTimeValues;
+ 
+    TimeStampArray timeStamps=null;
 
+   
     public FlightRecordsWrapper(List<FlightDataRecord> records) {
         this.records = records;
     }
@@ -40,7 +46,7 @@ public class FlightRecordsWrapper implements RecordsWrapper {
     public double[][] getAltitudeInTime() {
         double[][] table;
         table = new double[2][];
-        table[0] = Arrays.stream(getOnBoardTimeValues()).mapToDouble((x)->{return (double)x;}).toArray();
+        table[0] = Arrays.stream(timeStamps.getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         for (int i = 0; i < records.size(); i++) {
             table[1][i] = records.get(i).altitude / 10.0;
@@ -54,18 +60,23 @@ public class FlightRecordsWrapper implements RecordsWrapper {
      *
      * @return
      */
+   
     @Override
-    public long[] getOnBoardTimeValues() {
-        if (timeValues == null) {
-            timeValues = new long[records.size()];
+     public TimeStampArray getTimeStamps() {
+        if (timeStamps==null) {
+            long[] timeValues = new long[records.size()];
             for (int i = 0; i < records.size(); i++) {
                 // conversion from milisecons (float) to nanoseconds (long):
                 timeValues[i] = Math.round(records.get(i).droneTime * 1_000_0000); 
             }
+            long[] recordedTimeValues = new long[records.size()];
+            for (int i = 0; i < records.size(); i++) {
+                recordedTimeValues[i] = records.get(i).time;
+            }
+            timeStamps=new TimeStampArray(recordedTimeValues, timeValues);
         }
-        return timeValues;
+         return timeStamps;
     }
-
     /**
      * Returns the table of the motors performance (in percent) in time (sec).
      * Format: time t1 t2 t3 motor 1 [0][1] [0][2] [0][3] ... motor 2 [1][1]
@@ -77,7 +88,7 @@ public class FlightRecordsWrapper implements RecordsWrapper {
     @Deprecated
     public double[][] getMotorsPower() {
         double[][] table = new double[5][];
-        table[0] = Arrays.stream(getOnBoardTimeValues()).mapToDouble((x)->{return (double)x;}).toArray();
+        table[0] = Arrays.stream(timeStamps.getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         table[2] = new double[records.size()];
         table[3] = new double[records.size()];
@@ -103,7 +114,7 @@ public class FlightRecordsWrapper implements RecordsWrapper {
     @Deprecated
     public double[][] getVelocities() {
         double[][] table = new double[4][];
-        table[0] = Arrays.stream(getOnBoardTimeValues()).mapToDouble((x)->{return (double)x;}).toArray();
+        table[0] = Arrays.stream(timeStamps.getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         table[2] = new double[records.size()];
         table[3] = new double[records.size()];
@@ -121,19 +132,30 @@ public class FlightRecordsWrapper implements RecordsWrapper {
     }
 
     @Override
-    public long[] getTimeOfRecordValues() {
-        if (recordedTimeValues == null) {
-            recordedTimeValues = new long[records.size()];
-            for (int i = 0; i < records.size(); i++) {
-                recordedTimeValues[i] = records.get(i).time;
-            }
-        }
-        return recordedTimeValues;
+    public SeriesGroupWrapper getParent() {
+        return null;
     }
 
     @Override
-    public TimeStampType getOriginalTimeStampSource() {
-        return TimeStampType.Both;
+    public void setParent(SeriesGroupWrapper parent) {
+        throw new UnsupportedOperationException("Not supported."); 
     }
+
+    @Override
+    public Collection<SeriesWrapper> getChildren() {
+        throw new UnsupportedOperationException("Not supported."); 
+    }
+
+    @Override
+    public ValueWrapper getValue(long time, TimeStampType timeType) {
+        throw new UnsupportedOperationException("Not supported."); 
+    }
+
+    @Override
+    public Collection<ValueWrapper> getIntervalSummary(long t1, long t2, TimeStampType timeType) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+   
 
 }

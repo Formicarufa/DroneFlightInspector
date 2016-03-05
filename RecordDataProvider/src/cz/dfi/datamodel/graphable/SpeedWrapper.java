@@ -2,6 +2,8 @@
  */
 package cz.dfi.datamodel.graphable;
 
+import cz.dfi.datamodel.series.TimeStampArray;
+
 /**
  * Object of this class encapsulates the list of speed values.
  * It is expected that the importer inserts one object of this
@@ -10,7 +12,7 @@ package cz.dfi.datamodel.graphable;
  */
 public abstract class SpeedWrapper extends DoubleQuantity {
 
-    public SpeedWrapper(double[] values, String name, String unit, long[] onBoardTimeValues, long[] recorderTimeValues) {
-        super(values, name, unit, onBoardTimeValues, recorderTimeValues);
+    public SpeedWrapper(double[] values, String name, String unit, TimeStampArray timeStamps) {
+        super(values, name, unit,timeStamps);
     }
 }

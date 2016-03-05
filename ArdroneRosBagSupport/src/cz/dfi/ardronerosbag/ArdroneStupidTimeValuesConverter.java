@@ -20,12 +20,12 @@ public class ArdroneStupidTimeValuesConverter implements TimeValuesConverter{
     }
     
     @Override
-    public Double boardTimeToRecordTime(double time, boolean outcoming) {
+    public Long boardTimeToRecordTime(long time, boolean outcoming) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Double recordTimeToBoardTime(double time, boolean outcoming) {
+    public Long recordTimeToOnboardTime(long time, boolean outcoming) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -13,5 +13,5 @@ package cz.dfi.datamodel;
  * 19.12.2015
  */
 public enum TimeStampType {
-    OnBoardTime, TimeOfRecord, Both
+    OnboardTime, TimeOfRecord, Both
 }

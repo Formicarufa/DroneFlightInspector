@@ -2,14 +2,15 @@
  */
 package cz.dfi.timecomponent;
 
-import cz.dfi.datamodel.RecordsWrapper;
 import cz.dfi.fileimporertinterface.FileImporter;
 import cz.dfi.recorddataprovider.FileLoadingRequestProcessor;
 import cz.dfi.recorddataprovider.OpenedFilesManager;
 import cz.dfi.recorddataprovider.RecordFile;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.text.DateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jtimeselector.JTimeSelector;
@@ -21,6 +22,7 @@ import org.openide.util.Lookup;
 import org.openide.util.LookupListener;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
+import cz.dfi.datamodel.series.SeriesWrapper;
 
 /**
  *
@@ -113,6 +115,12 @@ public class TimeSelectionComponent extends CloneableTopComponent {
                 filesManager.fileSelected(fileInfo);
             }
             TimeSelectionComponent.this.loadTimelineLayers();
+            jTimeSelector.setTimeToStringConverter((long l) -> {
+                cz.dfi.recorddataprovider.TimeToStringConverter c = cz.dfi.recorddataprovider.TimeToStringConverter.get();
+                Date d = new Date(l/1_000_000);
+                DateFormat f = c.getRecordingTimeGraphFormat();
+                return f.format(d);
+             });
             progr.finish();
         };
         FileLoadingRequestProcessor.getDefault().post(runnable);
@@ -189,15 +197,15 @@ public class TimeSelectionComponent extends CloneableTopComponent {
     }
 
     private void loadTimelineLayers() {
-        lookupResult = fileInfo.getLookup().lookupResult(RecordsWrapper.class);
+        lookupResult = fileInfo.getLookup().lookupResult(SeriesWrapper.class);
        lookupResult.addLookupListener(changeListener);
-        Collection<? extends RecordsWrapper> lookupAll = lookupResult.allInstances();
-        for (RecordsWrapper w : lookupAll) {
-            jTimeSelector.addTimeValuesLayer(w.getName(), w.getTimeOfRecordValues());
+        Collection<? extends SeriesWrapper> lookupAll = lookupResult.allInstances();
+        for (SeriesWrapper w : lookupAll) {
+            jTimeSelector.addTimeValuesLayer(w.getName(), w.getTimeStamps().getRecorderValues());
         }
         jTimeSelector.requireRepaint();
     }
-    private Lookup.Result<RecordsWrapper> lookupResult;
+    private Lookup.Result<SeriesWrapper> lookupResult;
     LookupListener changeListener = (evt ) -> {
         jTimeSelector.removeAllGraphLayers();
         this.loadTimelineLayers();

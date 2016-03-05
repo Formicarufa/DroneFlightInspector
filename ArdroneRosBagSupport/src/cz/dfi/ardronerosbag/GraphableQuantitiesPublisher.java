@@ -6,6 +6,7 @@ import cz.dfi.datamodel.graphable.AltitudeWrapper;
 import cz.dfi.datamodel.FlightDataRecord;
 import cz.dfi.datamodel.graphable.MotorsWrapper;
 import cz.dfi.datamodel.graphable.SpeedWrapper;
+import cz.dfi.datamodel.series.TimeStampArray;
 import java.util.List;
 import org.openide.util.lookup.InstanceContent;
 
@@ -22,8 +23,8 @@ public class GraphableQuantitiesPublisher {
     }
 
     void addQuantitiesToLookup(InstanceContent content) {
-        double[] recorderTimeValues = getRecorderTimeValues();
-        double[] droneTimeValues = getDroneTimeValues();
+        long[] recorderTimeValues = getRecorderTimeValues();
+        long[] droneTimeValues = getDroneTimeValues();
         double[] altitudes = getAltitudes();
         double[] motor1Powers = getMotor1Powers();
         double[] motor2Powers = getMotor2Powers();
@@ -32,7 +33,7 @@ public class GraphableQuantitiesPublisher {
         double[] xVelocities = getXVelocities();
         double[] yVelocities = getYVelocities();
         double[] zVelocities = getZVelocities();
-        content.add(new AltitudeWrapper(altitudes,"cm", droneTimeValues, recorderTimeValues));
+        content.add(new AltitudeWrapper(altitudes,"cm", new TimeStampArray( recorderTimeValues,droneTimeValues)));
         content.add(new MotorWrapper(motor1Powers, 1, droneTimeValues, recorderTimeValues));
         content.add(new MotorWrapper(motor2Powers, 2, droneTimeValues, recorderTimeValues));
         content.add(new MotorWrapper(motor3Powers, 3, droneTimeValues, recorderTimeValues));
@@ -42,18 +43,19 @@ public class GraphableQuantitiesPublisher {
         content.add(new SpeedDirectionWrapper(zVelocities, "z", droneTimeValues, recorderTimeValues));
     }
 
-    double[] getRecorderTimeValues() {
-        double[] res = new double[records.size()];
+    long[] getRecorderTimeValues() {
+        long[] res = new long[records.size()];
         for (int i = 0; i < records.size(); i++) {
-            res[i] = records.get(i).time/ 1_000_000;
+            res[i] = records.get(i).time;
         }
         return res;
     }
 
-    double[] getDroneTimeValues() {
-        double[] res = new double[records.size()];
+    long[] getDroneTimeValues() {
+        long[] res = new long[records.size()];
         for (int i = 0; i < records.size(); i++) {
-            res[i] = records.get(i).droneTime;
+            // conversion from milisecons (float) to nanoseconds (long):
+            res[i] = Math.round(records.get(i).droneTime * 1_000_0000); 
         }
         return res;
     }
@@ -127,16 +129,16 @@ public class GraphableQuantitiesPublisher {
 
 
     public static class MotorWrapper extends MotorsWrapper {
-        public MotorWrapper(double[] values, int motorNumber, double[] onBoardTimeValues, double[] recorderTimeValues) {
-            super(values, "Motor " + motorNumber + " power", onBoardTimeValues, recorderTimeValues);
+        public MotorWrapper(double[] values, int motorNumber, long[] onBoardTimeValues, long[] recorderTimeValues) {
+            super(values, "Motor " + motorNumber + " power", new TimeStampArray(recorderTimeValues, onBoardTimeValues));
         }
     }
 
 
 
     public static class SpeedDirectionWrapper extends SpeedWrapper {
-        public SpeedDirectionWrapper(double[] values, String direction, double[] onBoardTimeValues, double[] recorderTimeValues) {
-            super(values, "Speed in the " + direction + " direction", "mm / sec", onBoardTimeValues, recorderTimeValues);
+        public SpeedDirectionWrapper(double[] values, String direction, long[] onBoardTimeValues, long[] recorderTimeValues) {
+            super(values, "Speed in the " + direction + " direction", "mm / sec", new TimeStampArray(recorderTimeValues, onBoardTimeValues));
         }
 
     }

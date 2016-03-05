@@ -2,6 +2,8 @@
  */
 package cz.dfi.datamodel.graphable;
 
+import cz.dfi.datamodel.series.TimeStampArray;
+
 /**
  * Object of this class encapsulates the list of records of motor powers. The
  * values in the list should be in percent (range 0 - 100). Importer might more
@@ -12,7 +14,7 @@ package cz.dfi.datamodel.graphable;
  */
 public abstract class MotorsWrapper extends DoubleQuantity {
 
-    public MotorsWrapper(double[] values, String name, long[] onBoardTimeValues, long[] recorderTimeValues) {
-        super(values, name, "percent", onBoardTimeValues, recorderTimeValues);
+    public MotorsWrapper(double[] values, String name, TimeStampArray timeStamps) {
+        super(values, name, "percent", timeStamps);
     }
 }

@@ -3,6 +3,8 @@
 
 package cz.dfi.datamodel.graphable;
 
+import cz.dfi.datamodel.series.TimeStampArray;
+
 /**
  * Encapsulates a set of altitude values.
  * @author Tomas Prochazka
@@ -10,7 +12,7 @@ package cz.dfi.datamodel.graphable;
  */
 public class AltitudeWrapper extends DoubleQuantity {
 
-        public AltitudeWrapper(double[] values, String unit, long[] onBoardTimeValues, long[] recorderTimeValues) {
-            super(values, "Altitude", unit, onBoardTimeValues, recorderTimeValues);
+        public AltitudeWrapper(double[] values, String unit, TimeStampArray timeStamps) {
+            super(values, "Altitude", unit, timeStamps);
         }
     }

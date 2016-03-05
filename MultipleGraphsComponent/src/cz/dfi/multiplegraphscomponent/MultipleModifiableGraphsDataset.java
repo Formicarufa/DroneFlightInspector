@@ -70,7 +70,7 @@ public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
         for (GraphedQuantity q : quantitiesList) {
             quantities[i] = q;
             //TODO: change if time on board is required
-            timeValues[i] = q.quantity.getTimeOfRecordValues();
+            timeValues[i] = q.quantity.getTimeStamps().getRecorderValues();
             values[i] = q.quantity.getValuesAsDoubles();
             i++;
         }

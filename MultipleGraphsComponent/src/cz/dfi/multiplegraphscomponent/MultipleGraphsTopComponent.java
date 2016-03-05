@@ -2,8 +2,10 @@
  */
 package cz.dfi.multiplegraphscomponent;
 
+import cz.dfi.recorddataprovider.TimeToStringConverter;
 import cz.dfi.graphsselectioncomponent.GraphedQuantity;
 import cz.dfi.recorddataprovider.FileLookup;
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -13,6 +15,8 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.plot.IntervalMarker;
+import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -69,10 +73,16 @@ public final class MultipleGraphsTopComponent extends TopComponent {
         DateAxis axis = (DateAxis) ((XYPlot) chart.getPlot()).getDomainAxis();
         chart.getXYPlot().setDomainPannable(true);
         chart.getXYPlot().setRangePannable(true);
-        axis.setDateFormatOverride(new SimpleDateFormat("HH:mm:ss.SSS"));
+        //ValueMarker marker = new ValueMarker(1.44344100341993E12);
+        IntervalMarker marker = new IntervalMarker(1.44344100341993E12, 1.44344100341993E12+5000);
+        marker.setPaint(Color.ORANGE);
+        chart.getXYPlot().addDomainMarker(marker);
+        TimeToStringConverter converter = TimeToStringConverter.get();
+        final DateFormat timeFormat = converter.getRecordingTimeGraphFormat();
+        axis.setDateFormatOverride(timeFormat);
         add(p);
        // TODO: have to write own mouse wheel zoom-in, zoom-out control, because the one of JFreeChart is buggy.
-       // p.setMouseWheelEnabled(true);
+        p.setMouseWheelEnabled(true);
     }
 
     /**
