@@ -99,6 +99,7 @@
             </module-dependencies>
             <public-packages>
                 <package>cz.dfi.timecomponent</package>
+                <package>cz.dfi.timecomponent.selection</package>
             </public-packages>
         </data>
     </configuration>

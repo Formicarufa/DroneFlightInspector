@@ -57,6 +57,7 @@ public final class GraphsSelectionTopComponent extends TopComponent implements E
         listOfGraphables = new QuantitiesListModelProvider();
         rootNode = new RootNode(listOfGraphables);
         em.setRootContext(rootNode);
+        
        
 
     }
@@ -127,6 +128,7 @@ public final class GraphsSelectionTopComponent extends TopComponent implements E
             super(children);
             setDisplayName("Available graphs:");
         }
+        
     }
 
 }

@@ -6,6 +6,7 @@ package cz.dfi.datamodel.graphable;
 import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
+import cz.dfi.datamodel.values.TimeStamp;
 import cz.dfi.datamodel.values.ValueWrapper;
 import java.util.Collection;
 
@@ -26,14 +27,23 @@ public class DoubleQuantity  extends AbstractGraphableQuantity{
         return values;
     }
 
+    /**
+     * Has no children.
+     * @return null
+     */
     @Override
     public Collection<SeriesWrapper> getChildren() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
     public ValueWrapper getValue(long time, TimeStampType timeType) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int indexOfClosest = getTimeStamps().getIndexOfClosest(time, timeType);
+        if (indexOfClosest==-1) {
+            return null;
+        }
+        TimeStamp t = getTimeStamps().getClosestTimeStamp(time, timeType);
+        return new DoubleValueWrapper(name, t, values[indexOfClosest]);
     }
 
 }

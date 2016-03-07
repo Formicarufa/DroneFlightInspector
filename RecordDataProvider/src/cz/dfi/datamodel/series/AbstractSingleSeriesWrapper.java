@@ -28,7 +28,7 @@ public abstract class AbstractSingleSeriesWrapper implements SingleSeriesWrapper
 
     @Override
     public void setParent(SeriesGroupWrapper parent) {
-        this.parent=null;
+        this.parent=parent;
     }
 
     @Override

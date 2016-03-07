@@ -56,10 +56,12 @@ public abstract class ValuesGroupWrapper implements ValueWrapper{
     }
     /**
      * Adds a given ValueWrapper to the group.
+     * Updates the child's parent.
      * @param child new member of the group.
      */
     public void addChild(ValueWrapper child){
         members.add(child);
+        child.setParent(this);
     }
     /**
      * Gets the content of the group.
@@ -89,7 +91,7 @@ public abstract class ValuesGroupWrapper implements ValueWrapper{
      */
     public static ValuesGroupWrapper create(String name, TimeStamp time) {
         ValuesGroupWrapper res;
-        res = new TopLevelValuesGroupWrapper(name, time);
+        res = new DefaultlValuesGroupWrapper(name, time);
         return res;
     }
 
@@ -101,8 +103,13 @@ public abstract class ValuesGroupWrapper implements ValueWrapper{
      */
     public static ValuesGroupWrapper create(String name, TimeInterval timeInterval) {
         ValuesGroupWrapper res;
-        res = new TopLevelValuesGroupWrapper(name, timeInterval);
+        res = new DefaultlValuesGroupWrapper(name, timeInterval);
         return res;
+    }
+
+    @Override
+    public void setParent(ValuesGroupWrapper groupWrapper) {
+        this.parent=groupWrapper;
     }
     
     

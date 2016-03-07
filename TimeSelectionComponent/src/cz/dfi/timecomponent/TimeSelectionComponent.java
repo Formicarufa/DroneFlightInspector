@@ -2,6 +2,7 @@
  */
 package cz.dfi.timecomponent;
 
+import cz.dfi.datamodel.TimeSelectionLayer;
 import cz.dfi.fileimporertinterface.FileImporter;
 import cz.dfi.recorddataprovider.FileLoadingRequestProcessor;
 import cz.dfi.recorddataprovider.OpenedFilesManager;
@@ -47,6 +48,8 @@ public class TimeSelectionComponent extends CloneableTopComponent {
     private boolean selected = false;
     private boolean loaded=false;
     private OpenedFilesManager filesManager;
+    private SelectionProvider selectionProvider;
+    
 
     /**
      * Creates new form TimeSelectionComponent
@@ -68,6 +71,8 @@ public class TimeSelectionComponent extends CloneableTopComponent {
     private void createTimeline() {
         jPanel1.setLayout(new BorderLayout());
         jTimeSelector = new JTimeSelector();
+        selectionProvider = new SelectionProvider();
+        jTimeSelector.addTimeSelectionChangedListener(selectionProvider);
         jPanel1.add(jTimeSelector);
     }
     private JTimeSelector jTimeSelector;
@@ -197,7 +202,7 @@ public class TimeSelectionComponent extends CloneableTopComponent {
     }
 
     private void loadTimelineLayers() {
-        lookupResult = fileInfo.getLookup().lookupResult(SeriesWrapper.class);
+        lookupResult = fileInfo.getLookup().lookupResult(TimeSelectionLayer.class);
        lookupResult.addLookupListener(changeListener);
         Collection<? extends SeriesWrapper> lookupAll = lookupResult.allInstances();
         for (SeriesWrapper w : lookupAll) {
@@ -205,7 +210,7 @@ public class TimeSelectionComponent extends CloneableTopComponent {
         }
         jTimeSelector.requireRepaint();
     }
-    private Lookup.Result<SeriesWrapper> lookupResult;
+    private Lookup.Result<TimeSelectionLayer> lookupResult;
     LookupListener changeListener = (evt ) -> {
         jTimeSelector.removeAllGraphLayers();
         this.loadTimelineLayers();

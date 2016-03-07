@@ -6,8 +6,6 @@ import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.ValueWrapper;
 import cz.dfi.datamodel.values.ValuesGroupWrapper;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -16,11 +14,11 @@ import java.util.Collections;
  * implementation of {@link SeriesGroupWrapper} does not contain the time
  * information itself. However, it has to have parent which is able to provide
  * the time information when needed. Instance of this class does not have to
- * have parent. Class is instantiated through static method
+ * have parent.
  *
  * @author Tomas Prochazka 28.2.2016
  */
-class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
+public class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
 
     private final TimeStampArray timeStamps;
 
@@ -31,7 +29,7 @@ class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
      * @param timeStamps Array of time stamps associated with the values of
      * series subsumed into this group
      */
-    TopLevelSeriesGroupWrapper(String name, TimeStampArray timeStamps) {
+    protected TopLevelSeriesGroupWrapper(String name, TimeStampArray timeStamps) {
         super(name);
         this.timeStamps = timeStamps;
     }
@@ -46,14 +44,18 @@ class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
         ValuesGroupWrapper groupWrapper = ValuesGroupWrapper.create(name, timeStamps.getClosestTimeStamp(time, timeType));
         for (SeriesWrapper seriesWrapper : getChildren()) {
             ValueWrapper value = seriesWrapper.getValue(time, timeType);
-            groupWrapper.addChild(value);
+            if (value != null) {
+                groupWrapper.addChild(value);
+            }
         }
         return groupWrapper;
     }
 
     @Override
     public Collection<ValueWrapper> getIntervalSummary(long t1, long t2, TimeStampType timeType) {
-        ValuesGroupWrapper groupWrapper = ValuesGroupWrapper.create(name, getTimeStamps().getTimeInterval(t1, t2, timeType));
+        final TimeInterval timeInterval = getTimeStamps().getTimeInterval(t1, t2, timeType);
+        if (timeInterval==null) return Collections.emptyList();
+        ValuesGroupWrapper groupWrapper = ValuesGroupWrapper.create(name, timeInterval);
         for (SeriesWrapper seriesWrapper : getChildren()) {
             Collection<ValueWrapper> intervalSummary = seriesWrapper.getIntervalSummary(t1, t2, timeType);
             for (ValueWrapper valueWrapper : intervalSummary) {
@@ -61,7 +63,7 @@ class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
             }
         }
         if (groupWrapper.getChildren().isEmpty()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         } else {
             return Collections.singleton(groupWrapper);
         }

@@ -2,19 +2,15 @@
  */
 package cz.dfi.datamodel;
 
-import cz.dfi.datamodel.series.SeriesGroupWrapper;
-import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
-import cz.dfi.datamodel.values.ValueWrapper;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
  *
  * @author Tomas Prochazka 22.11.2015
  */
-public class FlightRecordsWrapper implements SeriesWrapper {
+public class FlightRecordsWrapper  {
 
     private final List<FlightDataRecord> records;
  
@@ -46,7 +42,7 @@ public class FlightRecordsWrapper implements SeriesWrapper {
     public double[][] getAltitudeInTime() {
         double[][] table;
         table = new double[2][];
-        table[0] = Arrays.stream(timeStamps.getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
+        table[0] = Arrays.stream(getTimeStamps().getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         for (int i = 0; i < records.size(); i++) {
             table[1][i] = records.get(i).altitude / 10.0;
@@ -61,7 +57,7 @@ public class FlightRecordsWrapper implements SeriesWrapper {
      * @return
      */
    
-    @Override
+    
      public TimeStampArray getTimeStamps() {
         if (timeStamps==null) {
             long[] timeValues = new long[records.size()];
@@ -88,7 +84,7 @@ public class FlightRecordsWrapper implements SeriesWrapper {
     @Deprecated
     public double[][] getMotorsPower() {
         double[][] table = new double[5][];
-        table[0] = Arrays.stream(timeStamps.getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
+        table[0] = Arrays.stream(getTimeStamps().getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         table[2] = new double[records.size()];
         table[3] = new double[records.size()];
@@ -114,7 +110,7 @@ public class FlightRecordsWrapper implements SeriesWrapper {
     @Deprecated
     public double[][] getVelocities() {
         double[][] table = new double[4][];
-        table[0] = Arrays.stream(timeStamps.getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
+        table[0] = Arrays.stream(getTimeStamps().getOnboardValues()).mapToDouble((x)->{return (double)x;}).toArray();
         table[1] = new double[records.size()];
         table[2] = new double[records.size()];
         table[3] = new double[records.size()];
@@ -125,37 +121,8 @@ public class FlightRecordsWrapper implements SeriesWrapper {
         }
         return table;
     }
-
-    @Override
+    
     public String getName() {
         return "Navigation data";
     }
-
-    @Override
-    public SeriesGroupWrapper getParent() {
-        return null;
-    }
-
-    @Override
-    public void setParent(SeriesGroupWrapper parent) {
-        throw new UnsupportedOperationException("Not supported."); 
-    }
-
-    @Override
-    public Collection<SeriesWrapper> getChildren() {
-        throw new UnsupportedOperationException("Not supported."); 
-    }
-
-    @Override
-    public ValueWrapper getValue(long time, TimeStampType timeType) {
-        throw new UnsupportedOperationException("Not supported."); 
-    }
-
-    @Override
-    public Collection<ValueWrapper> getIntervalSummary(long t1, long t2, TimeStampType timeType) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-   
-
 }

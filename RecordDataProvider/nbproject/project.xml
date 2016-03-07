@@ -92,7 +92,10 @@
             <public-packages>
                 <package>cz.dfi.datafileimplementation</package>
                 <package>cz.dfi.datamodel</package>
+                <package>cz.dfi.datamodel.common</package>
                 <package>cz.dfi.datamodel.graphable</package>
+                <package>cz.dfi.datamodel.series</package>
+                <package>cz.dfi.datamodel.values</package>
                 <package>cz.dfi.fileimporertinterface</package>
                 <package>cz.dfi.recorddataprovider</package>
                 <package>cz.dfi.recorddataprovider.caching</package>

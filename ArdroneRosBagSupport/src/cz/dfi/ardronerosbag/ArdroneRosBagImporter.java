@@ -41,12 +41,15 @@ public class ArdroneRosBagImporter implements RosbagImporter {
         try (FileInputStream f = new FileInputStream(data)) {
             List<FlightDataRecord> records = new ArrayList<>();
             RosbagReader r = new RosbagReader(f);
-            ArdroneRosBagMessageParser ardroneRosBagMessageParser = new ArdroneRosBagMessageParser(records);
-            r.parseBag(ardroneRosBagMessageParser);
+            ArdroneRosBagMessageParser parser = new ArdroneRosBagMessageParser(records);
+            r.parseBag(parser);
             content.add(new FlightRecordsWrapper(records));
-            content.add(new ImageRecordsWrapper(ardroneRosBagMessageParser.images));
-            GraphableQuantitiesPublisher publisher = new GraphableQuantitiesPublisher(records);
-            publisher.addQuantitiesToLookup(content);
+            content.add(new ImageRecordsWrapper(parser.images));
+            
+            ArdroneNavdataModel publisher = new ArdroneNavdataModel(records);
+            publisher.construct(content);
+            ArdroneCommandsModel commandsPublisher = new ArdroneCommandsModel(parser.pitch, parser.commands_time, parser.roll, parser.yaw, parser.vertical_speed);
+            commandsPublisher.construct(content);
             Logger.getLogger(ArdroneRosBagImporter.class.getName()).log(Level.SEVERE, "Loaded total of {0} records from the ROSBag file.", records.size());
 
         } catch (IOException | UnexpectedEndOfRosbagFileException | InvalidRosbagFormatException | RequiredFieldMissingRosbagException | InvalidFieldValueRosbagException ex) {
@@ -72,7 +75,7 @@ public class ArdroneRosBagImporter implements RosbagImporter {
                 parseNavData(rmd);
             } else if ("/ardrone/image_raw".equals(rmd.getTopic())) {
                 parseImage(rmd);
-            } else if ("/geometry_msgs/Twist".equals(rmd.getTopic())) {
+            } else if ("/cmd_vel".equals(rmd.getTopic())) {
                 parseCommands(rmd);
             }
         }
@@ -131,23 +134,23 @@ public class ArdroneRosBagImporter implements RosbagImporter {
 
         private void parseImage(RosMessageData message) throws IOException, UnexpectedEndOfRosbagFileException {
             RosStandardMessageHeader header = message.readMessageHeader();
-            
             long height = message.readUnsignedInt();
             long width = message.readUnsignedInt();
             String compression = message.readString();
             int isBigEndian = message.readByte();
             long step_row_length = message.readUnsignedInt();
-            byte[] messageBytes = message.readBytes(message.getBytesLeft());
-            BufferedImage i = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_RGB);
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    int pos = y * (int) step_row_length + x * 3;
-                    int rgb = messageBytes[pos + 2];
-                    rgb = (rgb << 8) + messageBytes[pos + 1];
-                    rgb = (rgb << 8) + messageBytes[pos];
-                    i.setRGB(x, y, rgb);
-                }
-            }
+            //byte[] messageBytes = message.readBytes(message.getBytesLeft());
+//            BufferedImage i = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_RGB);
+//            for (int x = 0; x < width; x++) {
+//                for (int y = 0; y < height; y++) {
+//                    int pos = y * (int) step_row_length + x * 3;
+//                    int rgb = messageBytes[pos + 2];
+//                    rgb = (rgb << 8) + messageBytes[pos + 1];
+//                    rgb = (rgb << 8) + messageBytes[pos];
+//                    i.setRGB(x, y, rgb);
+//                }
+//            }
+            BufferedImage i = null;
             images.add(new ImageDataRecord(header.stamp.getTimeAsNanos(),i));
         }
         /**
@@ -163,8 +166,9 @@ public class ArdroneRosBagImporter implements RosbagImporter {
          */
         private List<Double> yaw= new ArrayList<>();
         private List<Double> vertical_speed = new ArrayList<>();
-        
+        private List<Long> commands_time=new ArrayList<>();
         private void parseCommands(RosMessageData rmd) throws IOException, UnexpectedEndOfRosbagFileException {
+            commands_time.add(rmd.getTime().getTimeAsNanos());
             Vector3 linear = rmd.readVector3();
             pitch.add(linear.x);
             roll.add(linear.y);

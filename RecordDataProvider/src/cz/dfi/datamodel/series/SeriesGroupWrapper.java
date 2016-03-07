@@ -3,12 +3,9 @@
 
 package cz.dfi.datamodel.series;
 
-import cz.dfi.datamodel.TimeStampType;
-import cz.dfi.datamodel.values.ValueWrapper;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.netbeans.api.annotations.common.NonNull;
-import org.netbeans.api.annotations.common.NullAllowed;
 
 /**
  * Represent a group of series which share the time stamps.
@@ -62,9 +59,20 @@ public abstract class SeriesGroupWrapper implements SeriesWrapper{
      * Creates a new group which may contain multiple value series with a common time header.
      * @param name Name of the group
      * @param timeStamps Array of time values associated with the values of the members of the group.
+     * @return A new group
      */
     public static SeriesGroupWrapper create(String name,TimeStampArray timeStamps) {
         return new TopLevelSeriesGroupWrapper(name, timeStamps);
+    }
+            /**
+     * Creates a new group which may contain multiple value series with a common time header.
+     * The group is displayed on the TimeSelection component as a separate layer.
+     * @param name Name of the group
+     * @param timeStamps Array of time values associated with the values of the members of the group.
+     * @return A new group
+     */
+    public static SeriesGroupWrapper create_timelineLayer(String name,TimeStampArray timeStamps) {
+        return new SelectionLayerGroupWrapper(name, timeStamps);
     }
     /**
    * Creates a new group which may contain multiple value series with a common time header.
@@ -78,6 +86,11 @@ public abstract class SeriesGroupWrapper implements SeriesWrapper{
         SeriesGroupWrapper result = new NestedSeriesGroupWrapper(name);
         parent.addChild(result);
         return result;
+    }
+    public void addChildren(SeriesWrapper... children) {
+        for (SeriesWrapper seriesWrapper : children) {
+            addChild(seriesWrapper);
+        }
     }
 
     

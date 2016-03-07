@@ -71,18 +71,16 @@ public final class MultipleGraphsTopComponent extends TopComponent {
         chart = ChartFactory.createTimeSeriesChart(null, "time", "values", dataset, true, true, false);
         ChartPanel p = new ChartPanel(chart);
         DateAxis axis = (DateAxis) ((XYPlot) chart.getPlot()).getDomainAxis();
-        chart.getXYPlot().setDomainPannable(true);
-        chart.getXYPlot().setRangePannable(true);
-        //ValueMarker marker = new ValueMarker(1.44344100341993E12);
-        IntervalMarker marker = new IntervalMarker(1.44344100341993E12, 1.44344100341993E12+5000);
-        marker.setPaint(Color.ORANGE);
-        chart.getXYPlot().addDomainMarker(marker);
+        final XYPlot plot = chart.getXYPlot();
+        plot.setDomainPannable(true);
+        plot.setRangePannable(true);
         TimeToStringConverter converter = TimeToStringConverter.get();
         final DateFormat timeFormat = converter.getRecordingTimeGraphFormat();
         axis.setDateFormatOverride(timeFormat);
         add(p);
        // TODO: have to write own mouse wheel zoom-in, zoom-out control, because the one of JFreeChart is buggy.
         p.setMouseWheelEnabled(true);
+        SelectionHighlighter.create(plot);
     }
 
     /**

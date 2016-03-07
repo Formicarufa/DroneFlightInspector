@@ -42,6 +42,7 @@ public class GraphedQuantityNode extends AbstractNode implements CheckableNode {
     public static GraphedQuantityNode create(GraphedQuantity quantity, boolean checked) {
         GraphedQuantityNode n = new GraphedQuantityNode(quantity, checked, new InstanceContent());
         n.content.add(n);
+        n.setIconBaseWithExtension("cz/dfi/graphsselectioncomponent/iconmonstr-chart-16-16.png");
         return n;
     }
 

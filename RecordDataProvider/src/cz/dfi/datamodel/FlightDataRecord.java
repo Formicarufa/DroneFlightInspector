@@ -10,7 +10,7 @@ public class FlightDataRecord {
 
     /**
      * Time in nanoseconds since epoch (1970)
-     * (at the moment when the     * Time in nanoseconds since epoch (1970)
+     * (at the moment when the     
  message was recorded.)
      */
     public long time;

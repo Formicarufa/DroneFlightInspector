@@ -63,7 +63,7 @@ public class NestedSeriesGroupWrapper extends SeriesGroupWrapper {
             }
         }
         if (groupWrapper.getChildren().isEmpty()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         } 
         return Collections.singleton(groupWrapper);
     }

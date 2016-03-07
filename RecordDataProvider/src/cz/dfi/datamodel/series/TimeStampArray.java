@@ -147,7 +147,7 @@ public class TimeStampArray {
      * @return null if the values for the given TimeStampType are not available
      * or the array is empty.
      */
-    TimeStamp getClosestTimeStamp(long time, TimeStampType timeType) {
+    public TimeStamp getClosestTimeStamp(long time, TimeStampType timeType) {
         int indexOfClosest = getIndexOfClosest(time, timeType);
         if (indexOfClosest == -1) {
             return null;

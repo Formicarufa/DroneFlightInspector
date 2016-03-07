@@ -4,20 +4,19 @@
 package cz.dfi.datamodel.values;
 
 /**
- * Group which has to contain time information because it has no parent
- * from which it could obtain this information.
+ * Group of values which contains time information.
  */
-public class TopLevelValuesGroupWrapper extends ValuesGroupWrapper {
+public class DefaultlValuesGroupWrapper extends ValuesGroupWrapper {
 
     private final TimeStamp timeStamp;
     private final TimeInterval timeInterval;
-    TopLevelValuesGroupWrapper(String name, TimeStamp timeStamp) {
+    DefaultlValuesGroupWrapper(String name, TimeStamp timeStamp) {
         super(name);
         this.timeStamp=timeStamp;
         this.timeInterval=null;
     }
 
-    public TopLevelValuesGroupWrapper(String name, TimeInterval timeInterval) {
+    public DefaultlValuesGroupWrapper(String name, TimeInterval timeInterval) {
         super(name);
         this.timeStamp = null;
         this.timeInterval = timeInterval;
@@ -33,8 +32,4 @@ public class TopLevelValuesGroupWrapper extends ValuesGroupWrapper {
     public TimeInterval getTimeInterval() {
         return timeInterval;
     }
-
-    
-    
-
 }

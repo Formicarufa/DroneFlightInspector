@@ -1,8 +1,9 @@
 /*
  */
 
-package cz.dfi.datamodel.graphable;
+package cz.dfi.datamodel.common;
 
+import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.TimeStampArray;
 
 /**
