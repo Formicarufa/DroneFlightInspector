@@ -2,30 +2,25 @@
  */
 package cz.dfi.graphs;
 
-import cz.dfi.datamodel.FlightDataRecord;
-import cz.dfi.recorddataprovider.caching.CachedDataProvider;
-import cz.dfi.recorddataprovider.caching.CachedDataReceiver;
+import cz.dfi.datamodel.common.MotorsWrapper;
+import cz.dfi.datamodel.series.SeriesGroupWrapper;
+import cz.dfi.recorddataprovider.FileLookup;
 import java.awt.BorderLayout;
-import java.util.List;
+import java.util.Collection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.DefaultXYDataset;
-import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Top component which displays something.
+ * Top component which displays graphs of motor powers.
  */
-@ConvertAsProperties(
-        dtd = "-//cz.dfi.graphs//MotorsGraph//EN",
-        autostore = false
-)
 @TopComponent.Description(
         preferredID = "MotorsGraphTopComponent",
         iconBase = "cz/dfi/graphs/iconmonstr-gear-icon-16.png",
@@ -43,26 +38,25 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MotorsGraphTopComponent=MotorsGraph Window",
     "HINT_MotorsGraphTopComponent=This is a MotorsGraph window"
 })
-public final class MotorsGraphTopComponent extends TopComponent implements CachedDataReceiver<double[][][]> {
+public final class MotorsGraphTopComponent extends TopComponent implements LookupListener {
 
-    private final DefaultXYDataset dataSet;
+    private static final long serialVersionUID = 1L;
+    private final MultipleValuesDataset dataSet;
     private final JFreeChart chart;
-    private double[][][] graphValues;
+    private final Lookup.Result<MotorsWrapper> motorsResult;
 
     public MotorsGraphTopComponent() {
         initComponents();
-        setName(Bundle.CTL_MotorsGraphTopComponent());
-        setToolTipText(Bundle.HINT_MotorsGraphTopComponent());
-        dataSet = new DefaultXYDataset();
-        chart = ChartFactory.createXYLineChart(null,
-                "Time [sec]", "Motor power [percent]", dataSet, PlotOrientation.VERTICAL, true, true,
-                false);
+        dataSet = new MultipleValuesDataset();
+//        chart = ChartFactory.createXYLineChart(null,
+//                "Time [sec]", "Motor power [percent]", dataSet, PlotOrientation.VERTICAL, true, true,
+//                false);
+        chart = ChartFactory.createTimeSeriesChart(null, "Time [sec]", "Motor powers", dataSet, true, true, false);
         ChartPanel cp = new ChartPanel(chart);
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(cp);
-        chart.getXYPlot().setDomainPannable(true);
-        chart.getXYPlot().setRangePannable(true);
-
+        GraphsCommon.setupChart(chart);
+        motorsResult = FileLookup.getDefault().lookupResult(MotorsWrapper.class);
     }
 
     /**
@@ -103,65 +97,26 @@ public final class MotorsGraphTopComponent extends TopComponent implements Cache
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        cachedData = CachedDataProvider.create(this);
+        setName(Bundle.CTL_MotorsGraphTopComponent());
+        setToolTipText(Bundle.HINT_MotorsGraphTopComponent());
+        motorsResult.addLookupListener(this);
+        resultChanged(null);
     }
-    private CachedDataProvider<double[][][]> cachedData;
 
     @Override
     public void componentClosed() {
-        cachedData.deleteData();
-    }
-
-    void writeProperties(java.util.Properties p) {
-        // better to version settings since initial version as advocated at
-        // http://wiki.apidesign.org/wiki/PropertyFiles
-        p.setProperty("version", "1.0");
-        // TODO store your settings
-    }
-
-    void readProperties(java.util.Properties p) {
-        String version = p.getProperty("version");
-        // TODO read your settings according to their version
+        motorsResult.removeLookupListener(this);
     }
 
     @Override
-    public double[][][] getDataForStoring(Lookup currentContext) {
-        List<FlightDataRecord> flightRecords = GraphsCommon.getFlightRecords(currentContext);
-        graphValues = new double[4][2][];
-        double[] times = new double[flightRecords.size()];
-        graphValues[0][0] = times;
-        graphValues[1][0] = times;
-        graphValues[2][0] = times;
-        graphValues[3][0] = times;
-        graphValues[0][1] = new double[flightRecords.size()];
-        graphValues[1][1] = new double[flightRecords.size()];
-        graphValues[2][1] = new double[flightRecords.size()];
-        graphValues[3][1] = new double[flightRecords.size()];
-
-        for (int i = 0; i < flightRecords.size(); i++) {
-            FlightDataRecord r = flightRecords.get(i);
-            times[i] = r.droneTime / 1_000_000;
-            graphValues[0][1][i] = r.motor1 * 100 / 255.0;
-            graphValues[1][1][i] = r.motor2 * 100 / 255.0;
-            graphValues[2][1][i] = r.motor3 * 100 / 255.0;
-            graphValues[3][1][i] = r.motor4 * 100 / 255.0;
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends MotorsWrapper> res = motorsResult.allInstances();
+        if (res.isEmpty()) {
+            dataSet.clear();
+        } else {
+            SeriesGroupWrapper w = res.iterator().next();
+            GraphsCommon.putChildrenToDataset(w, dataSet);
         }
-        return graphValues;
     }
 
-    @Override
-    public void setCurrentData(double[][][] data) {
-        graphValues = data;
-        dataSet.removeSeries("motor1");
-        dataSet.removeSeries("motor2");
-        dataSet.removeSeries("motor3");
-        dataSet.removeSeries("motor4");
-        if (data != null) {
-            dataSet.addSeries("motor1", data[0]);
-            dataSet.addSeries("motor2", data[1]);
-            dataSet.addSeries("motor3", data[2]);
-            dataSet.addSeries("motor4", data[3]);
-        }
-
-    }
 }

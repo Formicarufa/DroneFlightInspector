@@ -2,30 +2,24 @@
  */
 package cz.dfi.graphs;
 
-import cz.dfi.datamodel.FlightDataRecord;
-import cz.dfi.recorddataprovider.caching.CachedDataProvider;
-import cz.dfi.recorddataprovider.caching.CachedDataReceiver;
+import cz.dfi.datamodel.common.BatteryPercentWrapper;
+import cz.dfi.recorddataprovider.FileLookup;
 import java.awt.BorderLayout;
-import java.util.List;
+import java.util.Collection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.DefaultXYDataset;
-import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
-import org.openide.windows.TopComponent;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
+import org.openide.windows.TopComponent;
 
 /**
- * Top component which displays something.
+ * Top component which displays battery percentage graph.
  */
-@ConvertAsProperties(
-        dtd = "-//cz.dfi.graphs//BatteryGraph//EN",
-        autostore = false
-)
 @TopComponent.Description(
         preferredID = "BatteryGraphTopComponent",
         iconBase = "cz/dfi/graphs/iconmonstr-battery-7-icon-16.png",
@@ -43,25 +37,25 @@ import org.openide.util.NbBundle.Messages;
     "CTL_BatteryGraphTopComponent=BatteryGraph Window",
     "HINT_BatteryGraphTopComponent=This is a BatteryGraph window"
 })
-public final class BatteryGraphTopComponent extends TopComponent implements CachedDataReceiver<double[][]> {
+public final class BatteryGraphTopComponent extends TopComponent implements LookupListener {
 
-    private CachedDataProvider<double[][]> cachedDataProvider;
     protected final JFreeChart chart;
-    protected final DefaultXYDataset dataSet;
+    protected final SimpleTimeDataset dataSet;
+    private final Lookup.Result<BatteryPercentWrapper> batteryResult;
 
     public BatteryGraphTopComponent() {
         initComponents();
-        setName(Bundle.CTL_BatteryGraphTopComponent());
-        setToolTipText(Bundle.HINT_BatteryGraphTopComponent());
-        dataSet = new DefaultXYDataset();
-        chart = ChartFactory.createXYLineChart(null,
-                "Time [sec]", "Battery [percent]", dataSet, PlotOrientation.VERTICAL, false, true,
-                false);
+
+        dataSet = new SimpleTimeDataset();
+//        chart = ChartFactory.createXYLineChart(null,
+//                "Time [sec]", "Battery [percent]", dataSet, PlotOrientation.VERTICAL, false, true,
+//                false);
+        chart = ChartFactory.createTimeSeriesChart(null, "Time [sec]", "Battery", dataSet, false, true, false);
         ChartPanel cp = new ChartPanel(chart);
+        GraphsCommon.setupChart(chart);
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(cp);
-        chart.getXYPlot().setDomainPannable(true);
-        chart.getXYPlot().setRangePannable(true);
+        batteryResult = FileLookup.getDefault().lookupResult(BatteryPercentWrapper.class);
     }
 
     /**
@@ -102,52 +96,27 @@ public final class BatteryGraphTopComponent extends TopComponent implements Cach
     // End of variables declaration//GEN-END:variables
      @Override
     public void componentOpened() {
-        cachedDataProvider = CachedDataProvider.create(this);
+        setName(Bundle.CTL_BatteryGraphTopComponent());
+        setToolTipText(Bundle.HINT_BatteryGraphTopComponent());
+        batteryResult.addLookupListener(this);
+        resultChanged(null);
     }
 
     @Override
     public void componentClosed() {
-        cachedDataProvider.deleteData();
+        batteryResult.removeLookupListener(this);
+
     }
 
     @Override
-    protected void componentShowing() {
-        super.componentShowing();
-    }
-
-    @Override
-    public double[][] getDataForStoring(Lookup currentContext) {
-        List<FlightDataRecord> r = GraphsCommon.getFlightRecords(currentContext);
-        graphValues = new double[2][r.size()];
-        for (int i = 0; i < r.size(); i++) {
-            FlightDataRecord rec = r.get(i);
-            graphValues[0][i] = rec.droneTime / 1_000_000;
-            graphValues[1][i] = rec.batteryPercent;
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends BatteryPercentWrapper> alt = batteryResult.allInstances();
+        if (alt.isEmpty()) {
+            dataSet.resultChanged(new long[0], new double[0]);
+        } else {
+            BatteryPercentWrapper a = alt.iterator().next();
+            dataSet.resultChanged(a.getTimeStamps().getOnboardValues(), a.getValuesAsDoubles());
         }
-        return graphValues;
     }
 
-    private double[][] graphValues;
-
-    @Override
-    public void setCurrentData(double[][] data) {
-        graphValues = data;
-        dataSet.removeSeries("Battery");
-        if (data != null) {
-            dataSet.addSeries("Battery", data);
-        }
-
-    }
-
-    void writeProperties(java.util.Properties p) {
-        // better to version settings since initial version as advocated at
-        // http://wiki.apidesign.org/wiki/PropertyFiles
-        p.setProperty("version", "1.0");
-        // TODO store your settings
-    }
-
-    void readProperties(java.util.Properties p) {
-        String version = p.getProperty("version");
-        // TODO read your settings according to their version
-    }
 }

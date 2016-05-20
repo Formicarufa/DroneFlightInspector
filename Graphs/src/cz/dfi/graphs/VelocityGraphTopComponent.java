@@ -2,29 +2,25 @@
  */
 package cz.dfi.graphs;
 
-import cz.dfi.datamodel.FlightRecordsWrapper;
-import cz.dfi.recorddataprovider.caching.CachedDataProvider;
-import cz.dfi.recorddataprovider.caching.CachedDataReceiver;
+import cz.dfi.datamodel.common.SpeedWrapper;
+import cz.dfi.datamodel.series.SeriesGroupWrapper;
+import cz.dfi.recorddataprovider.FileLookup;
 import java.awt.BorderLayout;
+import java.util.Collection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.DefaultXYDataset;
-import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Top component which displays something.
+ * Top component which displays graph of velocity in x, y and z.
  */
-@ConvertAsProperties(
-        dtd = "-//cz.dfi.graphs//VelocityGraph//EN",
-        autostore = false
-)
 @TopComponent.Description(
         preferredID = "VelocityGraphTopComponent",
         iconBase = "cz/dfi/graphs/iconmonstr-crosshair-icon-16.png",
@@ -42,26 +38,27 @@ import org.openide.util.NbBundle.Messages;
     "CTL_VelocityGraphTopComponent=VelocityGraph Window",
     "HINT_VelocityGraphTopComponent=This is a VelocityGraph window"
 })
-public final class VelocityGraphTopComponent extends TopComponent implements CachedDataReceiver<double[][]>{
+public final class VelocityGraphTopComponent extends TopComponent implements LookupListener {
 
-    private final DefaultXYDataset dataSet;
+    private static final long serialVersionUID = 1L;
+    private final MultipleValuesDataset dataSet;
     private final JFreeChart chart;
-    private double[][] graphValues;
+    private final Lookup.Result<SpeedWrapper> velocityResult;
 
     public VelocityGraphTopComponent() {
         initComponents();
-         setName(Bundle.CTL_VelocityGraphTopComponent());
+        setName(Bundle.CTL_VelocityGraphTopComponent());
         setToolTipText(Bundle.HINT_VelocityGraphTopComponent());
-         dataSet = new DefaultXYDataset();
-        chart = ChartFactory.createXYLineChart(null,
-                "Time [sec]", "Distance [cm/s]", dataSet, PlotOrientation.VERTICAL, true, true,
-                false);
+        dataSet = new MultipleValuesDataset();
+//        chart = ChartFactory.createXYLineChart(null,
+//                "Time [sec]", "Distance [cm/s]", dataSet, PlotOrientation.VERTICAL, true, true,
+//                false);
+        chart = ChartFactory.createTimeSeriesChart(null, "Time [sec]", "Velocity", dataSet, true, true, false);
         ChartPanel cp = new ChartPanel(chart);
         jPanel1.setLayout(new BorderLayout());
-        chart.getXYPlot().setDomainPannable(true);
-        chart.getXYPlot().setRangePannable(true);
+        GraphsCommon.setupChart(chart);
         jPanel1.add(cp);
-
+        velocityResult = FileLookup.getDefault().lookupResult(SpeedWrapper.class);
     }
 
     /**
@@ -102,46 +99,23 @@ public final class VelocityGraphTopComponent extends TopComponent implements Cac
     // End of variables declaration//GEN-END:variables
         @Override
     public void componentOpened() {
-        cachedData = CachedDataProvider.create(this);
+        velocityResult.addLookupListener(this);
+        resultChanged(null);
     }
-    private CachedDataProvider<double[][]> cachedData;
 
     @Override
     public void componentClosed() {
-        cachedData.deleteData();
+        velocityResult.removeLookupListener(this);
     }
-
-     @Override
-    public double[][] getDataForStoring(Lookup currentContext) {
-        FlightRecordsWrapper r = GraphsCommon.getRecordsWrapper(currentContext);
-        graphValues = r.getVelocities();
-        return graphValues;
-    }
-
 
     @Override
-    public void setCurrentData(double[][] data) {
-        graphValues = data;
-        dataSet.removeSeries("vx");
-        dataSet.removeSeries("vy");
-        dataSet.removeSeries("vz");
-        if (data != null) {
-            dataSet.addSeries("Velocity in x", new double[][] {data[0],data[1]});
-            dataSet.addSeries("Velocity in y", new double[][] {data[0],data[2]});
-            dataSet.addSeries("Velocity in z", new double[][] {data[0],data[3]});
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends SpeedWrapper> res = velocityResult.allInstances();
+        if (res.isEmpty()) {
+            dataSet.clear();
+        } else {
+            SeriesGroupWrapper w = res.iterator().next();
+            GraphsCommon.putChildrenToDataset(w, dataSet);
         }
-
-    }
-
-    void writeProperties(java.util.Properties p) {
-        // better to version settings since initial version as advocated at
-        // http://wiki.apidesign.org/wiki/PropertyFiles
-        p.setProperty("version", "1.0");
-        // TODO store your settings
-    }
-
-    void readProperties(java.util.Properties p) {
-        String version = p.getProperty("version");
-        // TODO read your settings according to their version
     }
 }

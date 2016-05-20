@@ -17,7 +17,7 @@ import org.netbeans.api.annotations.common.NonNull;
  * recorder/controller device and whether the message itself was incoming = sent
  * from the drone to the recorder device e.g. information about altitude, or
  * outgoing: sent from the recorder to the drone - e.g. commands to the drone)
- *
+ * Each time stamp is saved as a number of nanoseconds since 1970.
  * @author Tomas Prochazka 28.2.2016 *
  */
 public class TimeStampArray {

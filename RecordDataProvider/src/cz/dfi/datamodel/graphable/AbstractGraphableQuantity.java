@@ -9,6 +9,7 @@ import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.values.ValueWrapper;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -40,7 +41,7 @@ public abstract class AbstractGraphableQuantity extends AbstractSingleSeriesWrap
 
     @Override
     public Collection<ValueWrapper> getIntervalSummary(long t1, long t2, TimeStampType timeType) {
-        return new ArrayList<>(0);
+        return Collections.emptyList();
     }
     
     

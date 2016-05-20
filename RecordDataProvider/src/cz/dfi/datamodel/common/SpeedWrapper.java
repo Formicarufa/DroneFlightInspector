@@ -12,7 +12,7 @@ import cz.dfi.datamodel.series.TopLevelSeriesGroupWrapper;
 public class SpeedWrapper extends TopLevelSeriesGroupWrapper {
 
     public SpeedWrapper(String unit, TimeStampArray timeStamps,double[] xValues, double[] yValues,double[] zValues  ) {
-        super("Velocity",timeStamps);
+        this(timeStamps);
         this.addChildren(
                 new DoubleQuantity(xValues, "Speed in x", unit, timeStamps),
                 new DoubleQuantity(yValues, "Speed in y", unit, timeStamps),
@@ -20,4 +20,17 @@ public class SpeedWrapper extends TopLevelSeriesGroupWrapper {
         );
         
     }
+
+        /**
+     * Make sure that double quantities representing speed values in x, y, z are added
+     * into this container using {@link #addChild} or 
+     * {@link #addChildren(cz.dfi.datamodel.series.SeriesWrapper...) } methods.
+     * To do that automatically, use the 
+     * {@link #SpeedWrapper(java.lang.String, cz.dfi.datamodel.series.TimeStampArray, double[], double[], double[])  other constructor}.
+     * @param timeStamps 
+     */
+    public SpeedWrapper(TimeStampArray timeStamps) {
+        super(NAME,timeStamps);
+    }
+    public static final String NAME = "Velocity";
 }

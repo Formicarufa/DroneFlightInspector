@@ -9,7 +9,7 @@ import java.util.Collection;
 
 /**
  *
- * @author XXXXX
+ * @author Tomas Prochazka
  */
 public abstract class AbstractValueWrapper implements ValueWrapper{
     protected final String name;

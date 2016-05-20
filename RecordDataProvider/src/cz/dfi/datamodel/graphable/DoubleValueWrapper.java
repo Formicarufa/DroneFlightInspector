@@ -8,13 +8,10 @@ package cz.dfi.datamodel.graphable;
 import cz.dfi.datamodel.values.AbstractValueWrapper;
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;
-import cz.dfi.datamodel.values.ValueWrapper;
-import cz.dfi.datamodel.values.ValuesGroupWrapper;
-import java.util.Collection;
 
 /**
  *
- * @author XXXXX
+ * @author Tomas Prochazka
  */
 public class DoubleValueWrapper extends AbstractValueWrapper{
     double value;

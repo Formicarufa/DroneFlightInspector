@@ -25,6 +25,8 @@ import org.openide.util.LookupListener;
  * @author Tomas Prochazka
  */
 public final class SelectionHighlighter implements LookupListener{
+
+    private static Lookup.Result<TimeSelection> result;
     private final XYPlot plot;
 
     protected SelectionHighlighter(XYPlot plot) {
@@ -34,11 +36,8 @@ public final class SelectionHighlighter implements LookupListener{
     public static SelectionHighlighter create(XYPlot plot){
         SelectionHighlighter highlighter = new SelectionHighlighter(plot);
         Lookup lkp = FileLookup.getDefault();
-        Lookup.Result<TimeSelection> result = lkp.lookupResult(TimeSelection.class);
+        result = lkp.lookupResult(TimeSelection.class);
         result.addLookupListener(highlighter);
-      
-       lkp.lookupResult(TimeValueSelectionImpl.class).addLookupListener(highlighter);
-       lkp.lookupResult(TimeIntervalSelectionImpl.class).addLookupListener(highlighter); //Todo:check
         return highlighter;
     }
 
@@ -50,6 +49,7 @@ public final class SelectionHighlighter implements LookupListener{
         if (value!=null) {                                                                      //To millis conversion
             ValueMarker valueMarker = new ValueMarker(value.getSelectedValue().getRecorderValue()/1_000_000); //!Hardcoded time stamp type 
             plot.addDomainMarker(valueMarker);
+            valueMarker.setPaint(ORANGE);
             return;
         } 
         TimeIntervalSelection interval = l.lookup(TimeIntervalSelection.class);
@@ -57,11 +57,12 @@ public final class SelectionHighlighter implements LookupListener{
             long l1 = interval.getSelectedInterval().t1.getRecorderValue();//!Hardcoded time stamp type
             long l2 = interval.getSelectedInterval().t2.getRecorderValue();//!Hardcoded time stamp type
             IntervalMarker marker = new IntervalMarker(l1/1_000_000, l2/1_000_000); //To millis conversion
-            marker.setPaint(new Color(255,115,0));
+            marker.setPaint(ORANGE);
             marker.setAlpha(.3f);
             plot.addDomainMarker(marker);
         }
         
     }
+    public static final Color ORANGE = new Color(255,115,0);
     
 }

@@ -7,6 +7,7 @@ import cz.dfi.recorddataprovider.TimeToStringConverter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Default way of converting time values (represented as a long integer -  number of nanoseconds since 1970) 
@@ -18,6 +19,10 @@ public class DefaultTimeToStringConverter  implements TimeToStringConverter{
 
     final DateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");    
     final DateFormat full = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
+
+    public DefaultTimeToStringConverter() {
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
 
     @Override
     public DateFormat getRecordingTimeGraphFormat() {

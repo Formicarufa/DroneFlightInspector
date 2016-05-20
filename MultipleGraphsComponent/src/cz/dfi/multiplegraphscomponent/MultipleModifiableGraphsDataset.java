@@ -14,6 +14,8 @@ import org.jfree.data.xy.AbstractXYDataset;
  */
 public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
 
+    private static final long serialVersionUID = 1L;
+
     GraphedQuantity[] quantities;
     long[][] timeValues;
     double[][] values;
@@ -32,7 +34,7 @@ public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
     }
 
     @Override
-    public Comparable getSeriesKey(int series) {
+    public String getSeriesKey(int series) {
         return quantities[series].getQuantityName();
     }
 

@@ -6,6 +6,7 @@
 
 package cz.dfi.ardronerosbag;
 
+import cz.dfi.datamodel.ImportHelper;
 import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.SeriesGroupWrapper;
@@ -43,7 +44,7 @@ public class ArdroneCommandsModel {
                 new DoubleQuantity(yaw, "Yaw (rotation about z) command", "-1...1", timeStamps),
                 new DoubleQuantity(vertical, "Vertical speed command", "-1...1", timeStamps)
         );
-        ArdroneNavdataModel.addTreeToLookup(commands, content);
+        ImportHelper.addTreeToLookup(commands, content);
     }
     
 }

@@ -58,6 +58,7 @@ public final class MultipleGraphsTopComponent extends TopComponent {
     protected final MultipleModifiableGraphsDataset dataset;
     private final Lookup.Result<GraphedQuantity> quantitiesSearch;
     LookupListener listener = this::resultChanged;
+    private final SelectionHighlighter highlighter;
 
     public MultipleGraphsTopComponent() {
         initComponents();
@@ -80,7 +81,7 @@ public final class MultipleGraphsTopComponent extends TopComponent {
         add(p);
        // TODO: have to write own mouse wheel zoom-in, zoom-out control, because the one of JFreeChart is buggy.
         p.setMouseWheelEnabled(true);
-        SelectionHighlighter.create(plot);
+        highlighter = SelectionHighlighter.create(plot);
     }
 
     /**

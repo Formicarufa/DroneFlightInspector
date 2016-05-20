@@ -4,6 +4,7 @@ package cz.dfi.ardronerosbag;
 
 import cz.dfi.datamodel.common.AltitudeWrapper;
 import cz.dfi.datamodel.FlightDataRecord;
+import cz.dfi.datamodel.ImportHelper;
 import cz.dfi.datamodel.common.AccelerationWrapper;
 import cz.dfi.datamodel.common.BatteryPercentWrapper;
 import cz.dfi.datamodel.common.MagnetometerWrapper;
@@ -34,8 +35,8 @@ public class ArdroneNavdataModel {
 
     void construct(InstanceContent content) {
         long[] recorderTimeValues = getLongArray(r -> r.time);
-        // conversion from milisecons (float) to nanoseconds (long):
-        long[] droneTimeValues = getLongArray(r -> Math.round(r.droneTime * 1_000_000));
+        // conversion from microsecons (float) to nanoseconds (long):
+        long[] droneTimeValues = getLongArray(r -> Math.round(r.droneTime * 1_000.0));
         TimeStampArray timeStamps = new TimeStampArray(recorderTimeValues, droneTimeValues);
         double[] altitudes = getDoubleArray(r -> r.altitude);
         double[] motor1Powers = getDoubleArray(r -> r.motor1);
@@ -77,19 +78,9 @@ public class ArdroneNavdataModel {
                 tempWrapper, windCond,
                 rotationWrapper, accelerationWrapper);
         content.add(records);
-        addTreeToLookup(navdata, content);
+        ImportHelper.addTreeToLookup(navdata, content);
     }
 
-    public static void addTreeToLookup(SeriesWrapper wrapper, InstanceContent content) {
-        content.add(wrapper);
-        final Collection<SeriesWrapper> children = wrapper.getChildren();
-        if (children == null) {
-            return;
-        }
-        for (SeriesWrapper child : children) {
-            addTreeToLookup(child, content);
-        }
-    }
 
     double[] getDoubleArray(ToDoubleFunction<FlightDataRecord> f) {
         double[] res = new double[records.size()];

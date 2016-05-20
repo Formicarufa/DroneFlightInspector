@@ -15,12 +15,24 @@ import cz.dfi.datamodel.series.TopLevelSeriesGroupWrapper;
  */
 public class MagnetometerWrapper extends TopLevelSeriesGroupWrapper{
     public MagnetometerWrapper(String unit, TimeStampArray timeStamps, double [] xValues, double [] yValues, double [] zValues) {
-        super("Magnetometer ",timeStamps);
+        this(timeStamps);
         this.addChildren(
                 new DoubleQuantity(xValues, "Magnetometer x", unit, timeStamps),
                 new DoubleQuantity(yValues, "Magnetometer y", unit, timeStamps),
                 new DoubleQuantity(zValues, "Magnetometer z", unit, timeStamps)
         );
     }
+    /**
+     * Make sure that double quantities representing magnetometer values in x, y, z are added
+     * into this container using {@link #addChild} or 
+     * {@link #addChildren(cz.dfi.datamodel.series.SeriesWrapper...) } methods.
+     * To do that automatically, use the 
+     * {@link #MagnetometerWrapper(java.lang.String, cz.dfi.datamodel.series.TimeStampArray, double[], double[], double[]) other constructor}.
+     * @param timeStamps 
+     */
+    public MagnetometerWrapper(TimeStampArray timeStamps) {
+        super(NAME,timeStamps);
+    }
+    public static final String NAME = "Magnetometer readings";
    
 }

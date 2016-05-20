@@ -40,13 +40,15 @@ import cz.dfi.datamodel.series.SeriesWrapper;
 )
 public class TimeSelectionComponent extends CloneableTopComponent {
 
+    private static final long serialVersionUID = 1L;
+
     private RecordFile fileInfo;
     private File file;
     private String path;
     private FileImporter fileImporter;
     private String importerName;
-    private boolean selected = false;
-    private boolean loaded=false;
+    private volatile boolean selected = false;
+    private volatile boolean loaded=false;
     private OpenedFilesManager filesManager;
     private SelectionProvider selectionProvider;
     
@@ -80,8 +82,10 @@ public class TimeSelectionComponent extends CloneableTopComponent {
     @Override
     protected void componentActivated() {
         super.componentActivated();
-        if (loaded) filesManager.fileSelected(fileInfo);
         selected = true;
+        if (loaded) {
+            filesManager.fileSelected(fileInfo);
+        }
     }
 
     @Override
@@ -94,7 +98,6 @@ public class TimeSelectionComponent extends CloneableTopComponent {
 
     @Override
     protected void componentOpened() {
-        selected = true;
         super.componentOpened();
         if (file == null) {
             file = new File(path);
@@ -104,6 +107,10 @@ public class TimeSelectionComponent extends CloneableTopComponent {
         fileInfo = filesManager.newFileOpened(file.getName());
         fileInfo.getLookupContent().add(fileInfo);
         setDisplayName(file.getName());
+        if (!file.exists()) {
+            close();
+            return;
+        }
         Runnable runnable = () -> {
              final ProgressHandle progr =ProgressHandle.createHandle("Loading file " + file.getName());
              progr.start();
@@ -114,6 +121,8 @@ public class TimeSelectionComponent extends CloneableTopComponent {
             }
             if (!fileImporter.loadRecords(file, fileInfo.getLookupContent())) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, "File importer with the name {0} was unable to load the file {1}", new String[]{importerName, file.getName()});
+                TimeSelectionComponent.this.close();
+                return;
             }
             loaded=true;
             if (TimeSelectionComponent.this.selected == true) {
@@ -131,11 +140,20 @@ public class TimeSelectionComponent extends CloneableTopComponent {
         FileLoadingRequestProcessor.getDefault().post(runnable);
 
     }
-
     @Override
     protected void componentHidden() {
         super.componentHidden(); //To change body of generated methods, choose Tools | Templates.
         selected = false;
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void componentDeactivated() {
+        super.componentDeactivated(); //To change body of generated methods, choose Tools | Templates.
     }
 
     /**

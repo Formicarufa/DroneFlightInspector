@@ -14,6 +14,7 @@ import cz.dfi.datamodel.series.TimeStampArray;
 public class AltitudeWrapper extends DoubleQuantity {
 
         public AltitudeWrapper(double[] values, String unit, TimeStampArray timeStamps) {
-            super(values, "Altitude", unit, timeStamps);
+            super(values, NAME, unit, timeStamps);
         }
+    public static final String NAME = "Altitude";
     }

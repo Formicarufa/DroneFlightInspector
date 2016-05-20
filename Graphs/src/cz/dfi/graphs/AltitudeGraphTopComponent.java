@@ -3,19 +3,28 @@
 package cz.dfi.graphs;
 
 import cz.dfi.datamodel.FlightDataRecord;
+import cz.dfi.datamodel.common.AltitudeWrapper;
+import cz.dfi.recorddataprovider.FileLookup;
+import cz.dfi.recorddataprovider.TimeToStringConverter;
 import cz.dfi.recorddataprovider.caching.CachedDataProvider;
 import cz.dfi.recorddataprovider.caching.CachedDataReceiver;
 import java.awt.BorderLayout;
+import java.text.DateFormat;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.DefaultXYDataset;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
+import org.openide.util.LookupEvent;
+import org.openide.util.LookupListener;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
@@ -36,43 +45,43 @@ import org.openide.util.NbBundle.Messages;
 )
 @Messages({
     "CTL_AltitudeGraphAction=AltitudeGraph",
-    "CTL_AltitudeGraphTopComponent=AltitudeGraph Window",
-    "HINT_AltitudeGraphTopComponent=This is a AltitudeGraph window"
+    "CTL_AltitudeGraphTopComponent=Altitude Graph Window",
+    "HINT_AltitudeGraphTopComponent=This is a Altitude Graph window"
 })
-public final class AltitudeGraphTopComponent extends TopComponent implements CachedDataReceiver<double[][]> {
+public final class AltitudeGraphTopComponent extends TopComponent implements LookupListener {
 
-    private CachedDataProvider<double[][]> cachedDataProvider;
+    private static final long serialVersionUID = 1L;
+
     protected final JFreeChart chart;
-    protected final DefaultXYDataset dataSet;
+    protected final SimpleTimeDataset dataSet;
+    private final Lookup.Result<AltitudeWrapper> altitudeResult;
 
     public AltitudeGraphTopComponent() {
         initComponents();
-        setName(Bundle.CTL_AltitudeGraphTopComponent());
-        setToolTipText(Bundle.HINT_AltitudeGraphTopComponent());
-        dataSet = new DefaultXYDataset();
-        chart = ChartFactory.createXYLineChart(null,
-                "Time [sec]", "Altitude [cm]", dataSet, PlotOrientation.VERTICAL, false, true,
-                false);
+        dataSet = new SimpleTimeDataset();
+//        chart = ChartFactory.createXYLineChart(null,
+//                "Time [sec]", "Altitude [cm]", dataSet, PlotOrientation.VERTICAL, false, true,
+//                false);
+        chart = ChartFactory.createTimeSeriesChart(null, "Time [sec]", "Altitude [cm]", dataSet, false, true, false);
         ChartPanel cp = new ChartPanel(chart);
+        GraphsCommon.setupChart(chart);
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(cp);
-        chart.getXYPlot().setDomainPannable(true);
-        chart.getXYPlot().setRangePannable(true);
+        altitudeResult = FileLookup.getDefault().lookupResult(AltitudeWrapper.class);
+
     }
 
     @Override
     public void componentOpened() {
-        cachedDataProvider = CachedDataProvider.create(this);
+        setName(Bundle.CTL_AltitudeGraphTopComponent());
+        setToolTipText(Bundle.HINT_AltitudeGraphTopComponent());
+        altitudeResult.addLookupListener(this);
+        resultChanged(null);
     }
 
     @Override
     public void componentClosed() {
-        cachedDataProvider.deleteData();
-    }
-
-    @Override
-    protected void componentShowing() {
-        super.componentShowing();
+        altitudeResult.removeLookupListener(this);
     }
 
     /**
@@ -112,32 +121,13 @@ public final class AltitudeGraphTopComponent extends TopComponent implements Cac
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
     @Override
-    public double[][] getDataForStoring(Lookup currentContext) {
-        List<FlightDataRecord> r = GraphsCommon.getFlightRecords(currentContext);
-        graphValues = new double[2][r.size()];
-        for (int i = 0; i < r.size(); i++) {
-            FlightDataRecord rec = r.get(i);
-            graphValues[0][i] = rec.droneTime / 1_000_000;
-            graphValues[1][i] = rec.altitude / 10;
+    public void resultChanged(LookupEvent ev) {
+        Collection<? extends AltitudeWrapper> alt = altitudeResult.allInstances();
+        if (alt.isEmpty()) {
+            dataSet.resultChanged(new long[0], new double[0]);
+        } else {
+            AltitudeWrapper a = alt.iterator().next();
+            dataSet.resultChanged(a.getTimeStamps().getOnboardValues(), a.getValuesAsDoubles());
         }
-        return graphValues;
-    }
-
-    private double[][] graphValues;
-
-    @Override
-    public void setCurrentData(double[][] data) {
-        graphValues = data;
-        dataSet.removeSeries("Altitude");
-        if (data != null) {
-            dataSet.addSeries("Altitude", data);
-        }
-
-    }
-
-    void writeProperties(Properties p) {
-    }
-
-    void readProperties(Properties p) {
     }
 }
