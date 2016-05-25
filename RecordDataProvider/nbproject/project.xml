@@ -100,6 +100,7 @@
                 <package>cz.dfi.fileimporertinterface</package>
                 <package>cz.dfi.recorddataprovider</package>
                 <package>cz.dfi.recorddataprovider.caching</package>
+                <package>cz.dfi.unitconverters</package>
             </public-packages>
         </data>
     </configuration>

@@ -21,7 +21,7 @@ import org.openide.util.NbBundle.Messages;
 @MIMEResolver.ExtensionRegistration(
         displayName = "#LBL_DfiZip_LOADER",
         mimeType = "application/zip",
-        extension = {".zip", ".dfi"}
+        extension = {"zip", "dfi"}
 )
 @DataObject.Registration(
         mimeType = "application/zip",

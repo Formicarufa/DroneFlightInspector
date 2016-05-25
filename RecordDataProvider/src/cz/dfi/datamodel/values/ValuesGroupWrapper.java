@@ -91,7 +91,7 @@ public abstract class ValuesGroupWrapper implements ValueWrapper{
      */
     public static ValuesGroupWrapper create(String name, TimeStamp time) {
         ValuesGroupWrapper res;
-        res = new DefaultlValuesGroupWrapper(name, time);
+        res = new DefaultValuesGroupWrapper(name, time);
         return res;
     }
 
@@ -103,7 +103,7 @@ public abstract class ValuesGroupWrapper implements ValueWrapper{
      */
     public static ValuesGroupWrapper create(String name, TimeInterval timeInterval) {
         ValuesGroupWrapper res;
-        res = new DefaultlValuesGroupWrapper(name, timeInterval);
+        res = new DefaultValuesGroupWrapper(name, timeInterval);
         return res;
     }
 

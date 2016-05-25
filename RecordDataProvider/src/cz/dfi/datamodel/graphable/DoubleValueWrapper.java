@@ -14,14 +14,18 @@ import cz.dfi.datamodel.values.TimeStamp;
  * @author Tomas Prochazka
  */
 public class DoubleValueWrapper extends AbstractValueWrapper{
-    double value;
-    public DoubleValueWrapper(String name, TimeStamp timeStamp, double value) {
+    private final double value;
+    private final String unit;
+    
+    public DoubleValueWrapper(String name, TimeStamp timeStamp, double value, String unit) {
         super(name, timeStamp);
         this.value=value;
+        this.unit = unit;
     }
-    public DoubleValueWrapper(String name, TimeInterval timeInterval, double value) {
+    public DoubleValueWrapper(String name, TimeInterval timeInterval, double value, String unit) {
         super(name, timeInterval);
         this.value=value;
+        this.unit = unit;
     }
 
     @Override
@@ -29,6 +33,15 @@ public class DoubleValueWrapper extends AbstractValueWrapper{
         return Double.toString(value);
     }
 
+    public double getValue() {
+        return value;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+    
+    
     
     
 }

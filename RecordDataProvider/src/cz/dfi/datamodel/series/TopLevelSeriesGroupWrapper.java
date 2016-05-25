@@ -41,21 +41,38 @@ public class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
 
     @Override
     public ValueWrapper getValue(long time, TimeStampType timeType) {
+        ValuesGroupWrapper groupWrapper = createValuesGroupWrapper(time, timeType);
+        addChildrenToValuesGroup(time, timeType, groupWrapper);
+        return groupWrapper;
+    }
+
+      /**
+     * Creates a default group for storing the values of children.
+     * If an inheritor wants to store the values in some more specific
+     * subclass of ValuesGroupWrapper, this method can be overridden.
+     * @param time
+     * @param timeType
+     * @return 
+     */
+    protected ValuesGroupWrapper createValuesGroupWrapper(long time, TimeStampType timeType) {
         ValuesGroupWrapper groupWrapper = ValuesGroupWrapper.create(name, timeStamps.getClosestTimeStamp(time, timeType));
+        return groupWrapper;
+    }
+
+    protected void addChildrenToValuesGroup(long time, TimeStampType timeType, ValuesGroupWrapper groupWrapper) {
         for (SeriesWrapper seriesWrapper : getChildren()) {
             ValueWrapper value = seriesWrapper.getValue(time, timeType);
             if (value != null) {
                 groupWrapper.addChild(value);
             }
         }
-        return groupWrapper;
     }
 
     @Override
     public Collection<ValueWrapper> getIntervalSummary(long t1, long t2, TimeStampType timeType) {
         final TimeInterval timeInterval = getTimeStamps().getTimeInterval(t1, t2, timeType);
         if (timeInterval==null) return Collections.emptyList();
-        ValuesGroupWrapper groupWrapper = ValuesGroupWrapper.create(name, timeInterval);
+        ValuesGroupWrapper groupWrapper = createValuesGroupWrapper(timeInterval);
         for (SeriesWrapper seriesWrapper : getChildren()) {
             Collection<ValueWrapper> intervalSummary = seriesWrapper.getIntervalSummary(t1, t2, timeType);
             for (ValueWrapper valueWrapper : intervalSummary) {
@@ -68,6 +85,17 @@ public class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
             return Collections.singleton(groupWrapper);
         }
 
+    }
+    /**
+     * Creates a default group for storing the values of children.
+     * If an inheritor wants to store the values in some more specific
+     * subclass of ValuesGroupWrapper, this method can be overridden.
+     * @param timeInterval
+     * @return 
+     */
+    protected ValuesGroupWrapper createValuesGroupWrapper(final TimeInterval timeInterval) {
+        ValuesGroupWrapper groupWrapper = ValuesGroupWrapper.create(name, timeInterval);
+        return groupWrapper;
     }
 
 }

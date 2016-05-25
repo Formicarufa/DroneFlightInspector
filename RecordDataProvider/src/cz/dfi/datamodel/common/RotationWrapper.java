@@ -6,9 +6,11 @@
 
 package cz.dfi.datamodel.common;
 
+import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.series.TopLevelSeriesGroupWrapper;
+import cz.dfi.datamodel.values.ValuesGroupWrapper;
 
 /**
  * 6.3.2016
@@ -45,4 +47,17 @@ public class RotationWrapper extends TopLevelSeriesGroupWrapper{
     }
     public static final String NAME = "Rotation";
 
+//    @Override
+//    public ValueWrapper getValue(long time, TimeStampType timeType) {
+//        ValuesGroupWrapper group  = new RotationValuesWrapper(name, getTimeStamps().getClosestTimeStamp(time, timeType));
+//        addChildrenToValuesGroup(time, timeType, group);
+//        return group;
+//    }
+
+    @Override
+    protected ValuesGroupWrapper createValuesGroupWrapper(long time, TimeStampType timeType) {
+        return new RotationValuesWrapper(name, getTimeStamps().getClosestTimeStamp(time, timeType));
+    }
+    
+    
 }
