@@ -24,6 +24,7 @@ import org.openide.util.LookupListener;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 import cz.dfi.datamodel.series.SeriesWrapper;
+import cz.dfi.recorddataprovider.DataLoadedCallback;
 
 /**
  *
@@ -124,6 +125,7 @@ public class TimeSelectionComponent extends CloneableTopComponent {
                 TimeSelectionComponent.this.close();
                 return;
             }
+            invokeDataLoadedCallbacks();
             loaded=true;
             if (TimeSelectionComponent.this.selected == true) {
                 filesManager.fileSelected(fileInfo);
@@ -139,6 +141,12 @@ public class TimeSelectionComponent extends CloneableTopComponent {
         };
         FileLoadingRequestProcessor.getDefault().post(runnable);
 
+    }
+
+    private void invokeDataLoadedCallbacks() {
+        Lookup.getDefault().lookupAll(DataLoadedCallback.class).stream().forEach(x->{
+            x.dataLoaded(fileInfo.getLookup(), fileInfo.getLookupContent());
+        });
     }
     @Override
     protected void componentHidden() {

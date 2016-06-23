@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cz.dfi.datamodel.common;
 
 import cz.dfi.datamodel.TimeStampType;
@@ -11,21 +10,26 @@ import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.series.TopLevelSeriesGroupWrapper;
 import cz.dfi.datamodel.values.ValuesGroupWrapper;
+import org.netbeans.api.annotations.common.NullUnknown;
 
 /**
  * 6.3.2016
+ *
  * @author Tomas Prochazka
  */
-public class RotationWrapper extends TopLevelSeriesGroupWrapper{
+public class RotationWrapper extends TopLevelSeriesGroupWrapper {
+
+    private DoubleQuantity roll;
+
     /**
-     * 
-     * @param unit  e.g. "degrees"
+     *
+     * @param unit e.g. "degrees"
      * @param timeStamps
      * @param rotX Roll - left-right tilt
      * @param rotY Pitch - forward-backward tilt
      * @param rotZ Yaw - rotation about the z axis
      */
-    public RotationWrapper(String unit, TimeStampArray timeStamps, double [] rotX, double [] rotY, double [] rotZ){
+    public RotationWrapper(String unit, TimeStampArray timeStamps, double[] rotX, double[] rotY, double[] rotZ) {
         this(timeStamps);
         this.addChildren(
                 new DoubleQuantity(rotX, "Roll (left-right tilt)", unit, timeStamps),
@@ -34,13 +38,15 @@ public class RotationWrapper extends TopLevelSeriesGroupWrapper{
         );
     }
 
-        /**
-     * Make sure that double quantities representing rotation values in x (roll), y(pitch), z (yaw) are added
-     * into this container using {@link #addChild} or 
+    /**
+     * Make sure that double quantities representing rotation values in x
+     * (roll), y(pitch), z (yaw) are added into this container using
+     * {@link #addChild} or 
      * {@link #addChildren(cz.dfi.datamodel.series.SeriesWrapper...) } methods.
-     * To do that automatically, use the 
+     * To do that automatically, use the
      * {@link #MagnetometerWrapper(java.lang.String, cz.dfi.datamodel.series.TimeStampArray, double[], double[], double[]) other constructor}.
-     * @param timeStamps 
+     *
+     * @param timeStamps
      */
     public RotationWrapper(TimeStampArray timeStamps) {
         super(NAME, timeStamps);
@@ -53,11 +59,33 @@ public class RotationWrapper extends TopLevelSeriesGroupWrapper{
 //        addChildrenToValuesGroup(time, timeType, group);
 //        return group;
 //    }
-
     @Override
     protected ValuesGroupWrapper createValuesGroupWrapper(long time, TimeStampType timeType) {
         return new RotationValuesWrapper(name, getTimeStamps().getClosestTimeStamp(time, timeType));
     }
-    
-    
+
+    @NullUnknown
+    public DoubleQuantity getRoll() {
+        if (roll == null) {
+            roll = getChildWithNameContaining("roll");
+        }
+        return roll;
+    }
+
+    @NullUnknown
+    public DoubleQuantity getPitch() {
+        if (roll == null) {
+            roll = getChildWithNameContaining("pitch");
+        }
+        return roll;
+    }
+
+    @NullUnknown
+    public DoubleQuantity getYaw() {
+        if (roll == null) {
+            roll = getChildWithNameContaining("yaw");
+        }
+        return roll;
+    }
+
 }

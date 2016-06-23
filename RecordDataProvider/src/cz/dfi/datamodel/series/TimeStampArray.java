@@ -17,7 +17,13 @@ import org.netbeans.api.annotations.common.NonNull;
  * recorder/controller device and whether the message itself was incoming = sent
  * from the drone to the recorder device e.g. information about altitude, or
  * outgoing: sent from the recorder to the drone - e.g. commands to the drone)
- * Each time stamp is saved as a number of nanoseconds since 1970.
+ * <p>
+ * Unit convention: nanoseconds since an arbitrary time instant in the past
+ * (Usually: since 1970. If this convention is changed, then also
+ * TimeToStringConverter interface should be re-implemented and its new
+ * implementation should be put into the file lookup.)
+ * </p>
+ *
  * @author Tomas Prochazka 28.2.2016 *
  */
 public class TimeStampArray {
@@ -67,6 +73,10 @@ public class TimeStampArray {
      * they could be estimated in the same manner as those of {@link #getOnboardValues()
      * } method. Typically, though, there is no reason these values should not
      * be included.
+     * * <p>
+     * Unit convention: nanoseconds since an arbitrary time instant in the past
+     * (Usually: since 1970.)
+     * </p>
      *
      * @return list of time values in the ascending order, might also return
      * null
@@ -221,15 +231,15 @@ public class TimeStampArray {
         }
         return TimeSearch.firstGreaterThanOrEqual(timeValues, time);
     }
- /**
-     * Gets the first element in the array of time stamps that is
-     * greater than or equal to a given time.
+
+    /**
+     * Gets the first element in the array of time stamps that is greater than
+     * or equal to a given time.
      *
      * @param time time value
      * @param timeType type of the given time value
-     * @return null if the array is empty or not available
-     * for the given TimeStampType or if no element satisfying the
-     * condition exists.
+     * @return null if the array is empty or not available for the given
+     * TimeStampType or if no element satisfying the condition exists.
      */
     TimeStamp getFirstGreaterThanOrEqual(long time, TimeStampType timeType) {
         long[] values = getValuesForType(timeType);
@@ -243,30 +253,33 @@ public class TimeStampArray {
         if (source == TimeStampType.Both || source != timeType) {
             return new TimeStamp(recorderValues[index], onboardValues[index], incoming);
         } else {
-            return new TimeStamp(values[index],timeType,incoming);
+            return new TimeStamp(values[index], timeType, incoming);
         }
 
     }
+
     /**
-     * For a given time interval [t1,t2] returns a representation
-     * of the interval with respect to this instance data. 
-     * (Trims the parts where there are no data, 
-     *  if a conversion is needed, it is done with respect to 
-     * the data origin.)
+     * For a given time interval [t1,t2] returns a representation of the
+     * interval with respect to this instance data. (Trims the parts where there
+     * are no data, if a conversion is needed, it is done with respect to the
+     * data origin.)
+     *
      * @param t1
      * @param t2
      * @param timeType
-     * @return 
+     * @return
      */
-    public TimeInterval getTimeInterval(long t1, long t2, TimeStampType timeType){
+    public TimeInterval getTimeInterval(long t1, long t2, TimeStampType timeType) {
         TimeStamp stamp1 = getFirstGreaterThanOrEqual(t1, timeType);
         TimeStamp stamp2 = getLastLessThanOrEqual(t2, timeType);
-        if (stamp1==null || stamp2 == null) return null;
-        if (stamp1.getTimeForType(timeType)>stamp2.getTimeForType(timeType)) {
+        if (stamp1 == null || stamp2 == null) {
+            return null;
+        }
+        if (stamp1.getTimeForType(timeType) > stamp2.getTimeForType(timeType)) {
             return null;
         }
         return new TimeInterval(stamp1, stamp2);
-        
+
     }
 
     private static boolean arrayEmpty(long[] timeValues) {
@@ -287,5 +300,14 @@ public class TimeStampArray {
                 throw new IllegalArgumentException("Unexpected TimeStampType.");
         }
         return timeValues;
+    }
+
+    /**
+     * Gets the number of time staps in the array
+     *
+     * @return
+     */
+    public int size() {
+        return recorderValues != null ? recorderValues.length : onboardValues.length;
     }
 }

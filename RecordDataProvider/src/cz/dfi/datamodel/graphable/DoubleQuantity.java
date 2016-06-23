@@ -45,5 +45,5 @@ public class DoubleQuantity  extends AbstractGraphableQuantity{
         TimeStamp t = getTimeStamps().getClosestTimeStamp(time, timeType);
         return new DoubleValueWrapper(name, t, values[indexOfClosest], unit);
     }
-
+    
 }

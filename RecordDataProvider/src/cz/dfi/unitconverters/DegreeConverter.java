@@ -5,6 +5,7 @@ package cz.dfi.unitconverters;
 
 import java.util.Collection;
 import org.netbeans.api.annotations.common.CheckForNull;
+import org.netbeans.api.annotations.common.NullUnknown;
 import org.openide.util.Lookup;
 
 /**
@@ -22,9 +23,20 @@ public interface DegreeConverter extends UnitConverter{
      */
     public static @CheckForNull Double convertToDegrees(double value, String unit) {
         Collection<? extends DegreeConverter> converters = Lookup.getDefault().lookupAll(DegreeConverter.class);
+        unit = unit.trim().toLowerCase();
         for (DegreeConverter converter : converters) {
             if (converter.canConvert(unit)) {
                 return converter.convert(value, unit);
+            }
+        }
+        return null;
+    }
+    public static @NullUnknown DegreeConverter getForUnit(String unit) {
+        Collection<? extends DegreeConverter> converters = Lookup.getDefault().lookupAll(DegreeConverter.class);
+        unit = unit.trim().toLowerCase();
+        for (DegreeConverter converter : converters) {
+            if (converter.canConvert(unit)) {
+                return converter;
             }
         }
         return null;

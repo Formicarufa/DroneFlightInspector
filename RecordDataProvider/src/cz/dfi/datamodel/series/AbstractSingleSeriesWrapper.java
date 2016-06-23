@@ -6,9 +6,7 @@ package cz.dfi.datamodel.series;
 import cz.dfi.datamodel.TimeStampType;
 
 /**
- * Represents a series which has a parent: a group to which it belongs
- * and therefore it does not need its own time information.
- * (If the time information is requested the corresponding parent method is called.)
+ * Represents a series of values.
  * It follows that each instance needs to be put into the group.
  * It is advised to make constructor of each inheritor class protected
  * and for creating of an instance use rather a static method 'create' which also

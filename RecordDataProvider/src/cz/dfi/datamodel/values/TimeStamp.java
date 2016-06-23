@@ -9,6 +9,10 @@ import cz.dfi.datamodel.TimeValuesConverter;
 /**
  * Represents a time stamp of an event in time. Contains the time stamp from
  * board the drone or time value added by the recorder or both, if available.
+ * <p>
+ * Unit convention: nanoseconds since an arbitrary time instant in the past 
+ * (Usually: since 1970)
+ * </p>
  * @author Tomas Prochazka
  * 4.3.2016
  */
@@ -83,7 +87,17 @@ public class TimeStamp {
             default:
                 throw new IllegalArgumentException("Unexpected time stamp type.");
         }
- 
     }
+    
+    /**
+     * Computes the distance between two time stamps.
+     * @param t1 time in nanoseconds
+     * @param t2 time in nanoseconds
+     * @return distance in seconds as a floating-point value
+     */
+    public static double deltaSec(long t1, long t2) {
+        return (t2 - t1)/NANOSECS_TO_SEC;
+    }
+    public static final double NANOSECS_TO_SEC = 1_000_000_000.0;
     
 }

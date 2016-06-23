@@ -41,15 +41,18 @@ import org.openide.util.NbBundle.Messages;
     "CTL_TreeViewTopComponent=TreeView Window",
     "HINT_TreeViewTopComponent=This is a TreeView window"
 })
-public final class TreeViewTopComponent extends TopComponent implements ExplorerManager.Provider  {
+public final class TreeViewTopComponent extends TopComponent implements ExplorerManager.Provider {
+
+    private static final long serialVersionUID = 1L;
     private final ExplorerManager mgr = new ExplorerManager();
+
     public TreeViewTopComponent() {
         initComponents();
         setName(Bundle.CTL_TreeViewTopComponent());
         setToolTipText(Bundle.HINT_TreeViewTopComponent());
         beanTreeView = new BeanTreeView();
         associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
-        mgr.setRootContext(new RootNode());
+        mgr.setRootContext(new RootNode(beanTreeView));
         add(beanTreeView, BorderLayout.CENTER);
         beanTreeView.setRootVisible(false);
     }
@@ -96,10 +99,10 @@ public final class TreeViewTopComponent extends TopComponent implements Explorer
         return mgr;
     }
 
-    private static class RootNode extends AbstractNode{
+    private static class RootNode extends AbstractNode {
 
-        public RootNode() {
-            super(Children.create(new TopLevelValueNodesFactory(), false));
+        public RootNode(BeanTreeView beanTreeView) {
+            super(Children.create(new TopLevelValueNodesFactory(beanTreeView), false));
         }
     }
 }

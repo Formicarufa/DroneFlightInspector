@@ -19,7 +19,7 @@ public interface FileStateChangedListener {
     void fileClosed(RecordFile recordFile);
         /**
      * This method is called by RecordFile when the file is selected.
-     * The components and extensions that used data from the file
+     * The components and extensions that use data from the file
      * usually DO NOT HAVE TO use this method. 
      * The change of the data can be detected by listening for a change of the required object
      * on the  lookup returned by {@link cz.dfi.recorddataprovider.FileLookup#getDefault() }.

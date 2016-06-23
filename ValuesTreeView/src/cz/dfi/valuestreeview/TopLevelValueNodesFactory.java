@@ -9,6 +9,7 @@ import cz.dfi.datamodel.values.ValueWrapper;
 import cz.dfi.recorddataprovider.FileLookup;
 import java.util.Collection;
 import java.util.List;
+import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
@@ -23,12 +24,13 @@ import org.openide.util.LookupListener;
 public class TopLevelValueNodesFactory extends ChildFactory<ValueWrapper> {
 
     private final Lookup.Result<ValueWrapper> availableWrappers;
+    private final BeanTreeView beanTreeView;
 
-    public TopLevelValueNodesFactory() {
+    public TopLevelValueNodesFactory(BeanTreeView beanTreeView) {
         Lookup fileLookup = FileLookup.getDefault();
         availableWrappers = fileLookup.lookupResult(ValueWrapper.class);
-
         availableWrappers.addLookupListener(listener);
+        this.beanTreeView=beanTreeView;
 
     }
 
@@ -52,7 +54,13 @@ public class TopLevelValueNodesFactory extends ChildFactory<ValueWrapper> {
     private final LookupListener listener = (LookupEvent ev)
             -> {
         this.refresh(true);
+        expandTree();
     };
 ;
+
+    private void expandTree() {
+        beanTreeView.expandAll();
+    }
+
 
 }

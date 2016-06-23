@@ -3,11 +3,9 @@
 package cz.dfi.datamodel.graphable;
 
 import cz.dfi.datamodel.TimeStampType;
-import cz.dfi.datamodel.TimeValuesConverter;
 import cz.dfi.datamodel.series.AbstractSingleSeriesWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.values.ValueWrapper;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -29,10 +27,6 @@ public abstract class AbstractGraphableQuantity extends AbstractSingleSeriesWrap
     @Override
     public TimeStampArray getTimeStamps() {
         return timeStamps;
-    }
-    @Override
-    public String getName() {
-        return name;
     }
     @Override
     public String getUnit() {
