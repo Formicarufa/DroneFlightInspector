@@ -6,8 +6,8 @@
 package cz.dfi.valuestreeview;
 
 import cz.dfi.datamodel.values.ValueWrapper;
+import cz.dfi.datamodel.values.ValuesTreeConsistent;
 import cz.dfi.recorddataprovider.FileLookup;
-import java.util.Collection;
 import java.util.List;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.ChildFactory;
@@ -25,26 +25,28 @@ public class TopLevelValueNodesFactory extends ChildFactory<ValueWrapper> {
 
     private final Lookup.Result<ValueWrapper> availableWrappers;
     private final BeanTreeView beanTreeView;
+    private final Lookup.Result<ValuesTreeConsistent> dataConsistent = FileLookup.getDefault().lookupResult(ValuesTreeConsistent.class);
 
     public TopLevelValueNodesFactory(BeanTreeView beanTreeView) {
         Lookup fileLookup = FileLookup.getDefault();
         availableWrappers = fileLookup.lookupResult(ValueWrapper.class);
-        availableWrappers.addLookupListener(listener);
-        this.beanTreeView=beanTreeView;
+        dataConsistent.addLookupListener(listener);
+        this.beanTreeView = beanTreeView;
+        
 
     }
 
     @Override
     protected boolean createKeys(List<ValueWrapper> toPopulate) {
         availableWrappers.allInstances().stream()
-                .filter((x)->x.getParent()==null)
+                .filter((x) -> x.getParent() == null)
                 .forEach(toPopulate::add);
         return true;
     }
 
     @Override
     protected Node createNodeForKey(ValueWrapper key) {
-        if (key.getChildren()!=null) {
+        if (key.getChildren() != null) {
             return new ValuesGroupNode(key);
         } else {
             return new SingleValueNode(key);
@@ -53,14 +55,17 @@ public class TopLevelValueNodesFactory extends ChildFactory<ValueWrapper> {
 
     private final LookupListener listener = (LookupEvent ev)
             -> {
+        if (dataConsistent.allInstances().isEmpty()) {
+            return;
+        }
         this.refresh(true);
         expandTree();
     };
-;
+
+    ;
 
     private void expandTree() {
-        beanTreeView.expandAll();
+       beanTreeView.expandAll();
     }
-
 
 }

@@ -6,6 +6,8 @@ import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.TimeValuesConverter;
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;
+import java.util.Arrays;
+import java.util.Optional;
 import jtimeselector.TimeSearch;
 import org.netbeans.api.annotations.common.CheckForNull;
 import org.netbeans.api.annotations.common.CheckReturnValue;
@@ -309,5 +311,77 @@ public class TimeStampArray {
      */
     public int size() {
         return recorderValues != null ? recorderValues.length : onboardValues.length;
+    }
+
+    /**
+     * Gets the minimal time value.
+     *
+     * @return
+     */
+    public Long getMinRecorderValue() {
+        long[] ar = getRecorderValues();
+        if (arrayEmpty(ar)) {
+            return null;
+        } else {
+            return ar[0];
+        }
+    }
+
+    /**
+     * Gets the minimal time value.
+     *
+     * @return
+     */
+    public Long getMinOnboardValue() {
+        long[] ar = getOnboardValues();
+        if (arrayEmpty(ar)) {
+            return null;
+        } else {
+            return ar[0];
+        }
+    }
+
+    /**
+     * Gets the maximal time value.
+     *
+     * @return
+     */
+    public Long getMaxRecorderValue() {
+        long[] ar = getRecorderValues();
+        if (arrayEmpty(ar)) {
+            return null;
+        } else {
+            return ar[ar.length - 1];
+        }
+    }
+
+    /**
+     * Gets the maximal time value.
+     *
+     * @return
+     */
+    public Long getMaxOnboardValue() {
+        long[] ar = getOnboardValues();
+        if (arrayEmpty(ar)) {
+            return null;
+        } else {
+            return ar[ar.length - 1];
+        }
+    }
+
+    public static Long getMinRecorderValue(TimeStampArray... arrays) {
+        return Arrays.stream(arrays)
+                .map(x -> x.getMinRecorderValue())
+                .filter(x -> x != null)
+                .min(Long::compare)
+                .orElse(null);
+    }
+
+    public static Long getMaxRecorderValue(TimeStampArray... arrays) {
+        return Arrays.stream(arrays)
+                .map(x -> x.getMaxRecorderValue())
+                .filter(x -> x != null)
+                .min(Long::compare)
+                .orElse(null);
     }
 }

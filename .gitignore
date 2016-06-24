@@ -13,3 +13,14 @@
 /jimColladaModelImporterJFXWrapper/build/
 /TrajectoryCalculation/build/
 /TrajectoryComponent/build/
+/JTimeSelectorWrapper/build/
+/RecordDataProvider/build/
+/RosbagReader/build/
+/TimeSelectionComponent/build/
+/RosBagSupport/build/
+/ArdroneRosBagSupport/build/
+/Graphs/build/
+/JFreeChartWrapper/build/
+/MultipleGraphsComponent/build/
+/RecordingPlayer/build/
+/MultipleGraphsComponent/nbproject/private/

@@ -2,6 +2,8 @@
  */
 package cz.dfi.timecomponent;
 
+import cz.dfi.timecomponent.selectionimpl.SetTimeRequestsReceiver;
+import cz.dfi.timecomponent.selectionimpl.SelectionProvider;
 import cz.dfi.datamodel.TimeSelectionLayer;
 import cz.dfi.fileimporertinterface.FileImporter;
 import cz.dfi.recorddataprovider.FileLoadingRequestProcessor;
@@ -52,7 +54,7 @@ public class TimeSelectionComponent extends CloneableTopComponent {
     private volatile boolean loaded=false;
     private OpenedFilesManager filesManager;
     private SelectionProvider selectionProvider;
-    
+    private SetTimeRequestsReceiver requestsReceiver;
 
     /**
      * Creates new form TimeSelectionComponent
@@ -137,6 +139,8 @@ public class TimeSelectionComponent extends CloneableTopComponent {
                 DateFormat f = c.getRecordingTimeGraphFormat();
                 return f.format(d);
              });
+            //enable option to change selected time from outside.
+            requestsReceiver = new SetTimeRequestsReceiver(jTimeSelector, fileInfo.getLookup(), fileInfo.getLookupContent());
             progr.finish();
         };
         FileLoadingRequestProcessor.getDefault().post(runnable);

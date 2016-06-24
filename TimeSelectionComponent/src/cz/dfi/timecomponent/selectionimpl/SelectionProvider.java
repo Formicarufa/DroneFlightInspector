@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.dfi.timecomponent;
+package cz.dfi.timecomponent.selectionimpl;
 
+import cz.dfi.timecomponent.selectionimpl.TimeValueSelectionImpl;
+import cz.dfi.timecomponent.selectionimpl.TimeIntervalSelectionImpl;
+import cz.dfi.datamodel.values.ValuesTreeConsistent;
 import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.datamodel.values.TimeInterval;
@@ -31,14 +34,14 @@ import org.openide.util.lookup.InstanceContent;
  *
  * @author Tomas Prochazka
  */
-class SelectionProvider implements TimeSelectionListener {
+public class SelectionProvider implements TimeSelectionListener {
 
     List<ValueWrapper> providedValues = new ArrayList<>();
     Long selectedTime = null;
     TimeSelectionType type = TimeSelectionType.None;
     LongRange selectedInterval = null;
     TimeSelection s = null;
-
+    ValuesTreeConsistent treeConsistent = new ValuesTreeConsistent();
     public SelectionProvider() {
     }
 
@@ -50,6 +53,7 @@ class SelectionProvider implements TimeSelectionListener {
         }
         final InstanceContent content = selectedFile.getLookupContent();
         Lookup lkp = selectedFile.getLookup();
+        content.remove(treeConsistent);
         removeOldValues(content);
         if (s != null) {
             content.remove(s);
@@ -74,6 +78,7 @@ class SelectionProvider implements TimeSelectionListener {
             default:
                 throw new AssertionError();
         }
+        content.add(treeConsistent);
 
     }
 

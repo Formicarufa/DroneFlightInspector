@@ -7,8 +7,6 @@
 package cz.dfi.multiplegraphscomponent;
 
 import cz.dfi.recorddataprovider.FileLookup;
-import cz.dfi.timecomponent.TimeIntervalSelectionImpl;
-import cz.dfi.timecomponent.TimeValueSelectionImpl;
 import cz.dfi.timecomponent.selection.TimeIntervalSelection;
 import cz.dfi.timecomponent.selection.TimeSelection;
 import cz.dfi.timecomponent.selection.TimeValueSelection;
