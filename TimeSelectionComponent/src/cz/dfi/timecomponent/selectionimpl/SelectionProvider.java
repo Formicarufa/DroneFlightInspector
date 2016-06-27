@@ -5,16 +5,12 @@
  */
 package cz.dfi.timecomponent.selectionimpl;
 
-import cz.dfi.timecomponent.selectionimpl.TimeValueSelectionImpl;
-import cz.dfi.timecomponent.selectionimpl.TimeIntervalSelectionImpl;
 import cz.dfi.datamodel.values.ValuesTreeConsistent;
 import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;
 import cz.dfi.datamodel.values.ValueWrapper;
-import cz.dfi.recorddataprovider.FileLookupProvider;
-import cz.dfi.recorddataprovider.RecordFile;
 import cz.dfi.timecomponent.selection.TimeSelection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,29 +32,33 @@ import org.openide.util.lookup.InstanceContent;
  */
 public class SelectionProvider implements TimeSelectionListener {
 
-    List<ValueWrapper> providedValues = new ArrayList<>();
-    Long selectedTime = null;
-    TimeSelectionType type = TimeSelectionType.None;
-    LongRange selectedInterval = null;
-    TimeSelection s = null;
-    ValuesTreeConsistent treeConsistent = new ValuesTreeConsistent();
-    public SelectionProvider() {
+    private final List<ValueWrapper> providedTreeRoots = new ArrayList<>();
+    private Long selectedTime = null;
+    private TimeSelectionType type = TimeSelectionType.None;
+    private LongRange selectedInterval = null;
+    private TimeSelection s = null;
+    private final ValuesTreeConsistent treeConsistent = new ValuesTreeConsistent();
+    private final Lookup lkp;
+    private final InstanceContent content;
+    public SelectionProvider(Lookup fileLookup, InstanceContent fileContent) {
+        this.lkp = fileLookup;
+        this.content = fileContent;
     }
 
     @Override
     public void timeSelectionChanged(JTimeSelector jts) {
-        RecordFile selectedFile = FileLookupProvider.getSelectedFile();
         if (!checkChange(jts)) {
             return;
         }
-        final InstanceContent content = selectedFile.getLookupContent();
-        Lookup lkp = selectedFile.getLookup();
+ 
+
         content.remove(treeConsistent);
         removeOldValues(content);
         if (s != null) {
             content.remove(s);
         }
-        switch (jts.getTimeSelectionType()) {
+        type= jts.getTimeSelectionType();
+        switch (type) {
             case SingleValue:
                 selectedTime = jts.getSelectedTime();
                 addNewValues(selectedTime, lkp, content);
@@ -114,12 +114,13 @@ public class SelectionProvider implements TimeSelectionListener {
     }
 
     private void removeOldValues(InstanceContent lookupContent) {
-        if (providedValues.isEmpty()) {
+        if (providedTreeRoots.isEmpty()) {
             return;
         }
-        for (ValueWrapper providedValue : providedValues) {
+        for (ValueWrapper providedValue : providedTreeRoots) {
             removeTree(providedValue, lookupContent);
         }
+        providedTreeRoots.clear();
     }
 
     private void removeTree(ValueWrapper providedValue, InstanceContent lookupContent) {
@@ -158,14 +159,14 @@ public class SelectionProvider implements TimeSelectionListener {
     private void addSeriesTree(SeriesWrapper s, InstanceContent cont, long l) {
         ValueWrapper value = s.getValue(l, TimeStampType.TimeOfRecord); //!Hardcoded time stamp type.
         addTreeToLookup(value, cont);
-        providedValues.add(value);
+        providedTreeRoots.add(value);
     }
 
     private void addSeriesTree(SeriesWrapper s, InstanceContent cont, LongRange l) {
         Collection<ValueWrapper> intervalSummary = s.getIntervalSummary(l.a, l.b, TimeStampType.TimeOfRecord); //!Hardcoded time stamp type.
         for (ValueWrapper summary : intervalSummary) {
             addTreeToLookup(summary, cont);
-            providedValues.add(summary);
+            providedTreeRoots.add(summary);
         }
 
     }

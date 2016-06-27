@@ -16,7 +16,7 @@ import org.openide.util.lookup.Lookups;
  * @author Tomas Prochazka
  */
 public class SingleValueNode extends AbstractNode{
-    ValueWrapper wrapper;
+    private ValueWrapper wrapper;
 
     public SingleValueNode(ValueWrapper wrapper) {
         super(Children.LEAF,Lookups.singleton(wrapper));
@@ -35,6 +35,11 @@ public class SingleValueNode extends AbstractNode{
         stringBuilder.append(":</b> ");
         stringBuilder.append(value);
         return stringBuilder.toString();
+    }
+
+    public void setWrapper(ValueWrapper wrapper) {
+        this.wrapper = wrapper;
+        fireDisplayNameChange("a","b");
     }
     
     

@@ -27,6 +27,7 @@ import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.recorddataprovider.DataLoadedCallback;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  *
@@ -76,9 +77,12 @@ public class TimeSelectionComponent extends CloneableTopComponent {
     private void createTimeline() {
         jPanel1.setLayout(new BorderLayout());
         jTimeSelector = new JTimeSelector();
-        selectionProvider = new SelectionProvider();
-        jTimeSelector.addTimeSelectionChangedListener(selectionProvider);
         jPanel1.add(jTimeSelector);
+    }
+
+    private void publishSelection(Lookup fileLookup, InstanceContent content) {
+        selectionProvider = new SelectionProvider(fileLookup,content);
+        jTimeSelector.addTimeSelectionChangedListener(selectionProvider);
     }
     private JTimeSelector jTimeSelector;
 
@@ -139,8 +143,12 @@ public class TimeSelectionComponent extends CloneableTopComponent {
                 DateFormat f = c.getRecordingTimeGraphFormat();
                 return f.format(d);
              });
+            final Lookup lookup = fileInfo.getLookup();
+            final InstanceContent content = fileInfo.getLookupContent();
             //enable option to change selected time from outside.
-            requestsReceiver = new SetTimeRequestsReceiver(jTimeSelector, fileInfo.getLookup(), fileInfo.getLookupContent());
+            requestsReceiver = new SetTimeRequestsReceiver(jTimeSelector, lookup, content);
+            publishSelection(lookup,content);
+
             progr.finish();
         };
         FileLoadingRequestProcessor.getDefault().post(runnable);

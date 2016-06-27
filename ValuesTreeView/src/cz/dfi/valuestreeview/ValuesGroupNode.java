@@ -9,6 +9,7 @@ package cz.dfi.valuestreeview;
 import cz.dfi.datamodel.values.ValueWrapper;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -18,7 +19,7 @@ import org.openide.util.lookup.Lookups;
 public class ValuesGroupNode extends AbstractNode{
 
     public ValuesGroupNode(ValueWrapper valueWrapper) {
-        super(Children.create(new ValuesGroupNodeFactory(valueWrapper),false), Lookups.singleton(valueWrapper));
+        super(Children.create(new ValuesGroupNodeFactory(valueWrapper),false), Lookup.EMPTY);
         final String name = valueWrapper.getName();
         setName(name);
         setDisplayName(name);

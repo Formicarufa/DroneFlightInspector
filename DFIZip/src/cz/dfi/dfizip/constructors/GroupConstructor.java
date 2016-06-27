@@ -3,6 +3,7 @@
 package cz.dfi.dfizip.constructors;
 
 import cz.dfi.datamodel.TimeStampType;
+import cz.dfi.datamodel.series.NestedSeriesGroupWrapper;
 import cz.dfi.datamodel.series.SeriesGroupWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.dfizip.readers.TimeReader;
@@ -55,7 +56,8 @@ public class GroupConstructor implements SeriesConstructor {
             if (p != null) {
                 group = p.getGroup(parentGroup.getTimeStamps());
             } else {
-                group = SeriesGroupWrapper.create(name, parentGroup);
+                group = new NestedSeriesGroupWrapper(name);
+                group.setParent(parentGroup);
             }
         }
         addChildren(group);

@@ -7,9 +7,12 @@ package cz.dfi.timecomponent.selectionimpl;
 
 import cz.dfi.datamodel.SetTimeRequest;
 import cz.dfi.datamodel.values.TimeInterval;
+import java.awt.EventQueue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jtimeselector.JTimeSelector;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -22,8 +25,8 @@ import org.openide.util.lookup.InstanceContent;
  */
 public class SetTimeRequestsReceiver implements LookupListener {
 
-    private JTimeSelector timeSelector;
-    private Lookup fileLookup;
+    private final JTimeSelector timeSelector;
+    private final Lookup fileLookup;
     private final Lookup.Result<SetTimeRequest> requests;
     private final InstanceContent lookupContent;
 
@@ -42,7 +45,7 @@ public class SetTimeRequestsReceiver implements LookupListener {
             return;
         }
         setTime(request);
-        lookupContent.remove(request); 
+        lookupContent.remove(request);
     }
 
     private void setTime(SetTimeRequest request) {
@@ -59,10 +62,23 @@ public class SetTimeRequestsReceiver implements LookupListener {
         } else {
             Long t1 = request.getTime().getRecorderValue();
             if (t1 == null) {
-                Logger.getLogger(SetTimeRequestsReceiver.class.getName()).log(Level.SEVERE, "Unableto set time on the time selection component (from outside), recorder time value is not available.");
+                Logger.getLogger(SetTimeRequestsReceiver.class.getName()).log(Level.SEVERE, "Unable to set time on the time selection component (from outside), recorder time value is not available.");
                 return;
             }
-            timeSelector.selectTime(t1);
+            if (EventQueue.isDispatchThread()) {
+                timeSelector.selectTime(t1);
+            } else {
+                try {
+                    //We wait because we do not want to flood the EventQueue
+                    // with too many requests.
+                    EventQueue.invokeAndWait(() -> {
+                        timeSelector.selectTime(t1);
+                    });
+                } catch (InterruptedException | InvocationTargetException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+
         }
     }
 

@@ -11,6 +11,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.RequestProcessor;
 
 @ActionID(
         category = "RecordingPlayer",
@@ -29,9 +30,9 @@ public final class PlayAction implements ActionListener {
     public PlayAction(RecordingPlayer context) {
         this.context = context;
     }
-
+    private static final RequestProcessor PROCESSOR = new RequestProcessor("Play recording processor",30);
     @Override
     public void actionPerformed(ActionEvent ev) {
-        // TODO use context
+        PROCESSOR.post(context);
     }
 }

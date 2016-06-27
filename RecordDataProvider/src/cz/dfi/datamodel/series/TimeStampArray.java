@@ -7,7 +7,7 @@ import cz.dfi.datamodel.TimeValuesConverter;
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.stream.Stream;
 import jtimeselector.TimeSearch;
 import org.netbeans.api.annotations.common.CheckForNull;
 import org.netbeans.api.annotations.common.CheckReturnValue;
@@ -370,7 +370,12 @@ public class TimeStampArray {
     }
 
     public static Long getMinRecorderValue(TimeStampArray... arrays) {
-        return Arrays.stream(arrays)
+        final Stream<TimeStampArray> stream = Arrays.stream(arrays);
+        return getMinRecorderValue(stream);
+    }
+
+    public static Long getMinRecorderValue(Stream<TimeStampArray> stream) {
+        return stream
                 .map(x -> x.getMinRecorderValue())
                 .filter(x -> x != null)
                 .min(Long::compare)
@@ -378,10 +383,15 @@ public class TimeStampArray {
     }
 
     public static Long getMaxRecorderValue(TimeStampArray... arrays) {
-        return Arrays.stream(arrays)
+        final Stream<TimeStampArray> stream = Arrays.stream(arrays);
+        return getMaxRecorderValue(stream);
+    }
+
+    public static Long getMaxRecorderValue(final Stream<TimeStampArray> stream) {
+        return stream
                 .map(x -> x.getMaxRecorderValue())
                 .filter(x -> x != null)
-                .min(Long::compare)
+                .max(Long::compare)
                 .orElse(null);
     }
 }

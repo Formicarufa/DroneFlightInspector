@@ -21,6 +21,7 @@ public class AddPlayActionCallback implements DataLoadedCallback{
     @Override
     public void dataLoaded(Lookup data, InstanceContent content) {
         content.add(new RecordingPlayer(data, content));
+        content.add(new RewindCookie(data, content));
     }
 
 }
