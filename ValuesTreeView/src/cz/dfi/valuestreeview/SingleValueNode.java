@@ -6,6 +6,7 @@
 
 package cz.dfi.valuestreeview;
 
+import cz.dfi.datamodel.graphable.DoubleValueWrapper;
 import cz.dfi.datamodel.values.ValueWrapper;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -22,8 +23,16 @@ public class SingleValueNode extends AbstractNode{
         super(Children.LEAF,Lookups.singleton(wrapper));
         this.wrapper = wrapper;
         setName(wrapper.getName());
+        if (wrapper instanceof DoubleValueWrapper) {
+            String unit = ((DoubleValueWrapper) wrapper).getUnit();
+            if (unit!=null) {
+                setShortDescription("Unit: " + unit);
+            }
+        }
         setIconBaseWithExtension("cz/dfi/valuestreeview/iconmonstr-ruler-8-16.png");
     }
+
+ 
 
     @Override
     public String getHtmlDisplayName() {

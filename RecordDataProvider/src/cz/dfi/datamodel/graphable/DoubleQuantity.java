@@ -9,6 +9,7 @@ import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.values.TimeStamp;
 import cz.dfi.datamodel.values.ValueWrapper;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -45,5 +46,14 @@ public class DoubleQuantity  extends AbstractGraphableQuantity{
         TimeStamp t = getTimeStamps().getClosestTimeStamp(time, timeType);
         return new DoubleValueWrapper(name, t, values[indexOfClosest], unit);
     }
+
+    @Override
+    public Collection<ValueWrapper> getIntervalSummary(long t1, long t2, TimeStampType timeType) {
+        int first = getTimeStamps().getFirstGreaterThanOrEqualIndex(t1, timeType);
+        int last = getTimeStamps().getLastLessThanOrEqualIndex(t2, timeType);
+        return Collections.emptyList();
+    }
+    
+    
     
 }
