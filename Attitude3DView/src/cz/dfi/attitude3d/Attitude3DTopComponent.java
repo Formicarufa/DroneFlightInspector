@@ -23,7 +23,10 @@ import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Top component which displays something.
+ * Top component which displays the 3D Window with attitude of the drone.
+ * Contains a JFX panel which is capable of displaying JavaFX inside of Swing.
+ * Gets the {@link RotationValuesWrapper} from the file lookup. The Rotation Values
+ * Wrapper contains the required roll, pitch and yaw. 
  */
 @ConvertAsProperties(
         dtd = "-//cz.dfi.attitude3d//Attitude3D//EN",
@@ -42,9 +45,9 @@ import org.openide.util.NbBundle.Messages;
         preferredID = "Attitude3DTopComponent"
 )
 @Messages({
-    "CTL_Attitude3DAction=Attitude3D",
-    "CTL_Attitude3DTopComponent=Attitude3D Window",
-    "HINT_Attitude3DTopComponent=This is a Attitude3D window"
+    "CTL_Attitude3DAction=Attitude 3D",
+    "CTL_Attitude3DTopComponent=Attitude 3D Window",
+    "HINT_Attitude3DTopComponent=Attitude 3D Window displays the pose of the drone in the selected time."
 })
 public final class Attitude3DTopComponent extends TopComponent implements LookupListener{
 
@@ -100,17 +103,13 @@ public final class Attitude3DTopComponent extends TopComponent implements Lookup
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
     }
 
     void writeProperties(java.util.Properties p) {
-        // better to version settings since initial version as advocated at
-        // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
     }
 

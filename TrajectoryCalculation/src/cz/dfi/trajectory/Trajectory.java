@@ -3,10 +3,13 @@
 package cz.dfi.trajectory;
 
 import cz.dfi.datamodel.TimeStampType;
+import cz.dfi.datamodel.graphable.DoubleValueWrapper;
 import cz.dfi.datamodel.series.AbstractSingleSeriesWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
+import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;
 import cz.dfi.datamodel.values.ValueWrapper;
+import cz.dfi.datamodel.values.ValuesGroupWrapper;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -39,7 +42,21 @@ public class Trajectory extends AbstractSingleSeriesWrapper {
 
     @Override
     public Collection<ValueWrapper> getIntervalSummary(long t1, long t2, TimeStampType timeType) {
-        return Collections.emptyList();
+        int first = getTimeStamps().getFirstGreaterThanOrEqualIndex(t1, timeType);
+        int last = getTimeStamps().getLastLessThanOrEqualIndex(t2, timeType);
+        if (last < first) {
+            return Collections.emptyList();
+        }
+        final TimeInterval timeInterval = getTimeStamps().getTimeInterval(t1, t2, timeType);
+        ValuesGroupWrapper group = ValuesGroupWrapper.create(name, timeInterval);
+        double firstx = xValues[first];
+        double lastx = xValues[last];
+        double firsty = yValues[first];
+        double lasty = yValues[last];
+        double dx = lastx-firstx;
+        double dy = lasty-firsty;
+        group.addChild(new DoubleValueWrapper("Translation", timeInterval, Math.sqrt(dx*dx+dy*dy), ""));
+        return Collections.singleton(group);
     }
 
     @Override
@@ -54,6 +71,5 @@ public class Trajectory extends AbstractSingleSeriesWrapper {
     public double[] getyValues() {
         return yValues;
     }
-    
 
 }

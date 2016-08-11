@@ -10,7 +10,8 @@ import org.openide.loaders.OpenSupport;
 import org.openide.windows.CloneableTopComponent;
 
 /**
- *
+ *Action that is called when DFI File is opened.
+ * Creates a top component with timeline.
  * @author Tomas Prochazka
  * 4.5.2016
  */

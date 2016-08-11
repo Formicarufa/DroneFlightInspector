@@ -11,6 +11,13 @@ import org.w3c.dom.Element;
  * to a set of classes which convert a series of values
  * described by an XML node in the description.xml file to a Series in the application
  * model.
+ * <p>
+ * The algorithm for data loading finds Constructor Providers in the file lookup,
+ * new providers can be therefore implemented and registered as services.
+ * </p>
+ * <p>
+ * -> by this approach it is possible to add support for a new data type
+ *    in the CSV file & a new element in the XML file
  * @author Tomas Prochazka
  * 15.5.2016
  */

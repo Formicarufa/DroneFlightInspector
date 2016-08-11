@@ -9,7 +9,11 @@ import org.netbeans.api.annotations.common.NonNull;
 
 /**
  * Represent a group of series which share the time stamps.
+ * The preferred approach of creating groups is to use the 
+ * static methods {@link #create(java.lang.String, cz.dfi.datamodel.series.SeriesGroupWrapper) 
+ * or {@link #create(java.lang.String, cz.dfi.datamodel.series.TimeStampArray) }
  * @author Tomas Prochazka
+ * @see cz.dfi.datamodel
  * 27.2.2016
  */
 public abstract class SeriesGroupWrapper implements SeriesWrapper{

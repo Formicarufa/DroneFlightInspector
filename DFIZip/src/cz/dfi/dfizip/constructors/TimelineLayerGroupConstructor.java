@@ -5,6 +5,11 @@ package cz.dfi.dfizip.constructors;
 import cz.dfi.datamodel.series.SeriesGroupWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
 
+/**
+ * A special {@link GroupConstructor} that ensures that the generated
+ * group will appear on the timeline as a separate layer.
+ * @author Tomas Prochazka
+ */
 public class TimelineLayerGroupConstructor extends GroupConstructor {
 
     public TimelineLayerGroupConstructor(String groupName) {

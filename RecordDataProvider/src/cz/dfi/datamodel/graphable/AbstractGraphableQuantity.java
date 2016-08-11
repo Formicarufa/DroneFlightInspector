@@ -10,7 +10,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- *
+ * An abstract class that models a quantity that can be graphed.
+ * Particularly, all graphable quantities have unit.
  * @author Tomas Prochazka 21.12.2015
  */
 public abstract class AbstractGraphableQuantity extends AbstractSingleSeriesWrapper implements GraphableQuantity {

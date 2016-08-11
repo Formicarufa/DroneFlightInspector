@@ -7,7 +7,8 @@ import cz.dfi.datamodel.values.AbstractValueWrapper;
 import cz.dfi.datamodel.values.TimeStamp;
 
 /**
- *
+ *A Value Wrapper that wraps a single point on a trajectory and 
+ * is able to convert it to String.
  * @author Tomas Prochazka
  * 13.6.2016
  */

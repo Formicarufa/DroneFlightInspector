@@ -10,7 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Element;
-
+/**
+ * @see ConstructorProvider
+ * @author Tomas Prochazka
+ */
 @ServiceProvider(service = ConstructorProvider.class)
 public class IntEnumConstructorProvider implements ConstructorProvider {
 

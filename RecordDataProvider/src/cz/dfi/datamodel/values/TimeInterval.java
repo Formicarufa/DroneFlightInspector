@@ -4,7 +4,7 @@
 package cz.dfi.datamodel.values;
 
 /**
- *
+ *A wrapper for two time stamps.
  * @author Tomas Prochazka
  * 4.3.2016
  */

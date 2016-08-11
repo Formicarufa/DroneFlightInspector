@@ -14,6 +14,7 @@ import org.netbeans.api.annotations.common.NonNull;
  * Group is created using the static method {@link #create(java.lang.String, cz.dfi.datamodel.values.ValuesGroupWrapper)}
  * or {@link #create(java.lang.String, long, cz.dfi.datamodel.TimeStampType, boolean).
  * @author Tomas Prochazka
+ * @see cz.dfi.datamodel
  * 27.2.2016
  */
 public abstract class ValuesGroupWrapper implements ValueWrapper{

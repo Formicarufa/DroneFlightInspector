@@ -7,7 +7,7 @@
 package cz.dfi.timecomponent.selectionimpl;
 
 import cz.dfi.datamodel.values.TimeStamp;
-import cz.dfi.timecomponent.selection.TimeValueSelection;
+import cz.dfi.timeselection.TimeValueSelection;
 
 
 public class TimeValueSelectionImpl implements TimeValueSelection {

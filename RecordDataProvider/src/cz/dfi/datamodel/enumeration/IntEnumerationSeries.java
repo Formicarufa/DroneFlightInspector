@@ -12,7 +12,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-
+/**
+ * Contains a series of integer values which are interpreted as enumeration values.
+ * The series contains a map of the integer values to string names of the enumeration states.
+ * @author Tomas Prochazka
+ */
 public class IntEnumerationSeries extends AbstractSingleSeriesWrapper {
 
     private final TimeStampArray timeStamps;

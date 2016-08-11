@@ -7,7 +7,10 @@ import cz.dfi.datamodel.common.BatteryPercentWrapper;
 import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.TimeStampArray;
 import org.openide.util.lookup.ServiceProvider;
-
+/**
+ * @see SpecialDoubleQuantProvider
+ * @author Tomas Prochazka
+ */
 @ServiceProvider(service = SpecialDoubleQuantProvider.class)
 public class BatteryLevelProvider implements SpecialDoubleQuantProvider {
 

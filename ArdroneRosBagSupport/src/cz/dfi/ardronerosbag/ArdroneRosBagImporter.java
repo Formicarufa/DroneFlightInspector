@@ -2,12 +2,7 @@
  */
 package cz.dfi.ardronerosbag;
 
-import cz.dfi.datamodel.FlightDataRecord;
-import cz.dfi.datamodel.FlightRecordsWrapper;
-import cz.dfi.datamodel.ImageDataRecord;
-import cz.dfi.datamodel.ImageRecordsWrapper;
 import cz.dfi.rosbagimporter.RosbagImporter;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,7 +23,7 @@ import rosbagreader.exceptions.RequiredFieldMissingRosbagException;
 import rosbagreader.exceptions.UnexpectedEndOfRosbagFileException;
 
 /**
- *
+ * Parses the ROS bag files with /ardrone/navdata and /cmd/vel commands.
  * @author Tomas Prochazka 20.11.2015
  */
 @ServiceProvider(
@@ -36,6 +31,13 @@ import rosbagreader.exceptions.UnexpectedEndOfRosbagFileException;
 )
 public class ArdroneRosBagImporter implements RosbagImporter {
 
+    /**
+     * Reads the file, returns false if it finds no /ardrone/navdata records.
+     * Publishes the data into the given lookup.
+     * @param data input data
+     * @param content content of the lookup into which the data will be inserted
+     * @return false if it finds no /ardrone/navdata records
+     */
     @Override
     public boolean loadRecords(File data, InstanceContent content) {
         try (FileInputStream f = new FileInputStream(data)) {
@@ -43,8 +45,9 @@ public class ArdroneRosBagImporter implements RosbagImporter {
             RosbagReader r = new RosbagReader(f);
             ArdroneRosBagMessageParser parser = new ArdroneRosBagMessageParser(records);
             r.parseBag(parser);
-            content.add(new FlightRecordsWrapper(records));
-            content.add(new ImageRecordsWrapper(parser.images));
+            if (records.isEmpty()) {
+                return false;
+            }
             
             ArdroneNavdataModel publisher = new ArdroneNavdataModel(records);
             publisher.construct(content);
@@ -62,9 +65,7 @@ public class ArdroneRosBagImporter implements RosbagImporter {
 
     private static class ArdroneRosBagMessageParser implements RosbagMessageDataParser {
 
-        private final List<FlightDataRecord> records;
-        private final List<ImageDataRecord> images = new ArrayList<>();
-        
+        private final List<FlightDataRecord> records;        
         private ArdroneRosBagMessageParser(List<FlightDataRecord> records) {
             this.records = records;
         }
@@ -139,19 +140,6 @@ public class ArdroneRosBagImporter implements RosbagImporter {
             String compression = message.readString();
             int isBigEndian = message.readByte();
             long step_row_length = message.readUnsignedInt();
-            //byte[] messageBytes = message.readBytes(message.getBytesLeft());
-//            BufferedImage i = new BufferedImage((int) width, (int) height, BufferedImage.TYPE_INT_RGB);
-//            for (int x = 0; x < width; x++) {
-//                for (int y = 0; y < height; y++) {
-//                    int pos = y * (int) step_row_length + x * 3;
-//                    int rgb = messageBytes[pos + 2];
-//                    rgb = (rgb << 8) + messageBytes[pos + 1];
-//                    rgb = (rgb << 8) + messageBytes[pos];
-//                    i.setRGB(x, y, rgb);
-//                }
-//            }
-            BufferedImage i = null;
-            images.add(new ImageDataRecord(header.stamp.getTimeAsNanos(),i));
         }
         /**
          * Forward/backward movement.

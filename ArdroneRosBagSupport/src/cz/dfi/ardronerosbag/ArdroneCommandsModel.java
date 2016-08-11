@@ -11,12 +11,12 @@ import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.SeriesGroupWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
-import cz.dfi.datamodel.series.TopLevelSeriesGroupWrapper;
 import java.util.List;
 import org.openide.util.lookup.InstanceContent;
 
 /**
  * 7.3.2016
+ * Converts the commands data loaded from the ROS bag file into series and puts them into the lookup.
  * @author Tomas Prochazka
  */
 public class ArdroneCommandsModel {

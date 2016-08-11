@@ -11,8 +11,6 @@ import cz.dfi.datamodel.series.TimeSeries;
  * If an instance of a class implementing this interface is
  * put to the Lookup, it  appears in the list of quantities that 
  * can be plotted on the Multiple Graphs Window.
- * (Another requirement is that the {@link SeriesWrapper#getOnBoardTimeValues() 
- * method does not return null.)
  * @author Tomas Prochazka
  * 19.12.2015
  */

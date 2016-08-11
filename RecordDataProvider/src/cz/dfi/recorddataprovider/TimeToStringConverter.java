@@ -3,7 +3,6 @@
 
 package cz.dfi.recorddataprovider;
 
-import cz.dfi.recorddataprovider.FileLookup;
 import java.text.DateFormat;
 import org.netbeans.api.annotations.common.NonNull;
 

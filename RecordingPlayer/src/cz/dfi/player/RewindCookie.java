@@ -5,7 +5,7 @@
  */
 package cz.dfi.player;
 
-import cz.dfi.datamodel.SetTimeRequest;
+import cz.dfi.timeselection.SetTimeRequest;
 import cz.dfi.datamodel.TimeSelectionLayer;
 import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.series.TimeStampArray;

@@ -7,7 +7,10 @@ import cz.dfi.datamodel.common.AccelerationWrapper;
 import cz.dfi.datamodel.series.SeriesGroupWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
 import org.openide.util.lookup.ServiceProvider;
-
+/**
+ * @see SpecialGroupProvider
+ * @author Tomas Prochazka
+ */
 @ServiceProvider(service = SpecialGroupProvider.class)
 public class AccelerationWrapperProvider implements SpecialGroupProvider {
 

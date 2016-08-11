@@ -10,9 +10,11 @@ import cz.dfi.datamodel.values.ValueWrapper;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.Lookups;
 
 /**
+ * Node that represents a group and 
+ * generate child nodes for members  of the group
+ * using the {@link  ValuesGroupNodeFactory}.
  * 6.3.2016
  * @author Tomas Prochazka
  */

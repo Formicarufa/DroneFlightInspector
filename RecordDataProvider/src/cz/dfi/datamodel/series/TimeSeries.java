@@ -3,9 +3,6 @@
 
 package cz.dfi.datamodel.series;
 
-import cz.dfi.datamodel.TimeStampType;
-import org.netbeans.api.annotations.common.CheckForNull;
-
 /**
  *
  * @author Tomas Prochazka

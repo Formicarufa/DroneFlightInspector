@@ -13,6 +13,7 @@ import cz.dfi.datamodel.TimeValuesConverter;
  * Unit convention: nanoseconds since an arbitrary time instant in the past 
  * (Usually: since 1970)
  * </p>
+ * @see cz.dfi.datamodel.series.TimeStampArray
  * @author Tomas Prochazka
  * 4.3.2016
  */

@@ -6,7 +6,8 @@ package cz.dfi.trajectory;
 import org.openide.util.Lookup;
 
 /**
- *
+ *A storage for data that are converted to {@link Trajectory} by 
+ * {@link TrajectoryDelegate}. 
  * @author Tomas Prochazka
  * 14.6.2016
  */

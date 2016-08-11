@@ -10,7 +10,12 @@ import cz.dfi.dfizip.readers.IntReader;
 import cz.dfi.dfizip.readers.ValueReader;
 import java.util.Map;
 
-
+/**
+ * Creates a series of enumeration values. 
+ * The reader it gives to the parser algorithm to read the 
+ * enumeration values from the CSV file is a standard {@link IntReader}.
+ * @author Tomas Prochazka
+ */
 public class IntEnumConstructor implements SingleSeriesConstructor {
     IntReader r = new IntReader();
     private final String name;

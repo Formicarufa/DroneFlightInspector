@@ -7,7 +7,9 @@ import org.jfree.data.general.DatasetChangeEvent;
 import org.jfree.data.xy.AbstractXYDataset;
 
 /**
- *
+ * Stores multiple series of values.
+ * When passing the values to the graphing component,
+ * the time values are converted from the nanoseconds (DFI convention) to milliseconds.
  * @author Tomas Prochazka 15.5.2016
  */
 public class MultipleValuesDataset extends AbstractXYDataset {
@@ -55,6 +57,9 @@ public class MultipleValuesDataset extends AbstractXYDataset {
         this.timeValues = timeValues;
         this.values = values;
         this.keys = keys;
+        if (timeValues== null) {
+            clear();
+        }
         notifyListeners(new DatasetChangeEvent(this, this));
     }
 

@@ -5,7 +5,7 @@
  */
 package cz.dfi.timecomponent.selectionimpl;
 
-import cz.dfi.datamodel.SetTimeRequest;
+import cz.dfi.timeselection.SetTimeRequest;
 import cz.dfi.datamodel.values.TimeInterval;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +20,11 @@ import org.openide.util.lookup.InstanceContent;
 
 /**
  * 24.6.2016
- *
+ *This class processes the set time requests that other Drone
+ * Flight Inspector modules put into the lookup.
+ * The set time request change the selection on the JTimeSelector.
+ * As a result, the time selector generates update event and
+ * time selection change is handled by {@link SelectionProvider}
  * @author Tomas Prochazka
  */
 public class SetTimeRequestsReceiver implements LookupListener {
@@ -58,27 +62,45 @@ public class SetTimeRequestsReceiver implements LookupListener {
                 Logger.getLogger(SetTimeRequestsReceiver.class.getName()).log(Level.SEVERE, "Unable to set time interval on the time selection component (from outside), recorder time value is not available.");
                 return;
             }
-            timeSelector.selectTimeInterval(t1, t2);
+            selectIntervalOnEventThread(t1, t2);
         } else {
             Long t1 = request.getTime().getRecorderValue();
             if (t1 == null) {
                 Logger.getLogger(SetTimeRequestsReceiver.class.getName()).log(Level.SEVERE, "Unable to set time on the time selection component (from outside), recorder time value is not available.");
                 return;
             }
-            if (EventQueue.isDispatchThread()) {
-                timeSelector.selectTime(t1);
-            } else {
-                try {
-                    //We wait because we do not want to flood the EventQueue
-                    // with too many requests.
-                    EventQueue.invokeAndWait(() -> {
-                        timeSelector.selectTime(t1);
-                    });
-                } catch (InterruptedException | InvocationTargetException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
+            selectTimeOnEventThread(t1);
 
+        }
+    }
+
+    private void selectIntervalOnEventThread(Long t1, Long t2) {
+        if (EventQueue.isDispatchThread()) {
+            timeSelector.selectTimeInterval(t1, t2);
+        } else {
+            try {
+                EventQueue.invokeAndWait(() -> {
+                    timeSelector.selectTimeInterval(t1, t2);
+                });
+            } catch (InterruptedException | InvocationTargetException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }
+
+    private void selectTimeOnEventThread(Long t1) {
+        if (EventQueue.isDispatchThread()) {
+            timeSelector.selectTime(t1);
+        } else {
+            try {
+                //We wait because we do not want to flood the EventQueue
+                // with too many requests.
+                EventQueue.invokeAndWait(() -> {
+                    timeSelector.selectTime(t1);
+                });
+            } catch (InterruptedException | InvocationTargetException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 

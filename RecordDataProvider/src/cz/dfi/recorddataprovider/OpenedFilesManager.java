@@ -1,7 +1,6 @@
 package cz.dfi.recorddataprovider;
 
 import org.openide.util.Lookup;
-import org.openide.util.lookup.InstanceContent;
 
 /**
  * Interface of the opened files management service. New files are registered by

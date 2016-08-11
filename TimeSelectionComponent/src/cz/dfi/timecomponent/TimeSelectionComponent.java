@@ -27,10 +27,27 @@ import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.recorddataprovider.DataLoadedCallback;
+import java.awt.EventQueue;
 import org.openide.util.lookup.InstanceContent;
 
 /**
- *
+ * Time Selection Component is created for each opened file.
+ * <p>
+ * The Time Selection Component receives the link to the
+ * file and importer that should be used to open the file.
+ * It uses the importer to asynchronously load the data immediately
+ * when opened.
+ * <p>
+ * Component is automatically reopened after the restart of application.
+ * To be able to reopen the last opened file, the 
+ * path of the file and the name of the importer are saved on the disk.
+ * After a restart, the component finds all importers in the lookup
+ * and selects the suitable importer according to its name.
+ * <p>
+ * Time Selection Component contains timeline (JTimeSelector panel).The response
+ * on the user interaction is done via {@link SelectionProvider} class.
+ * <p>
+ * 
  * @author Tomas Prochazka
  */
 @ConvertAsProperties(
@@ -123,12 +140,13 @@ public class TimeSelectionComponent extends CloneableTopComponent {
              progr.start();
             fileImporter = getFileImporter();
             if (fileImporter == null) {
-                TimeSelectionComponent.this.close();
+                closeFromNonEventThread();
                 return;
             }
             if (!fileImporter.loadRecords(file, fileInfo.getLookupContent())) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, "File importer with the name {0} was unable to load the file {1}", new String[]{importerName, file.getName()});
-                TimeSelectionComponent.this.close();
+                closeFromNonEventThread();
+                progr.finish();
                 return;
             }
             invokeDataLoadedCallbacks();
@@ -153,6 +171,12 @@ public class TimeSelectionComponent extends CloneableTopComponent {
         };
         FileLoadingRequestProcessor.getDefault().post(runnable);
 
+    }
+
+    private void closeFromNonEventThread() {
+        EventQueue.invokeLater(()->{
+            TimeSelectionComponent.this.close();
+        });
     }
 
     private void invokeDataLoadedCallbacks() {

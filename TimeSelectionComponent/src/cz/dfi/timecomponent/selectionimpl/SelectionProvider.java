@@ -11,7 +11,7 @@ import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;
 import cz.dfi.datamodel.values.ValueWrapper;
-import cz.dfi.timecomponent.selection.TimeSelection;
+import cz.dfi.timeselection.TimeSelection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -62,14 +62,14 @@ public class SelectionProvider implements TimeSelectionListener {
             case SingleValue:
                 selectedTime = jts.getSelectedTime();
                 addNewValues(selectedTime, lkp, content);
-                s = new TimeValueSelectionImpl(new TimeStamp(selectedTime, TimeStampType.TimeOfRecord, true)); //!Hardcoded time stamp type
+                s = new TimeValueSelectionImpl(new TimeStamp(selectedTime, TimeStampType.TimeOfRecord, true)); 
                 content.add(s);
                 break;
             case Interval:
                 selectedInterval = jts.getSelectedTimeInterval();
                 addNewValues(selectedInterval, lkp, content);
-                TimeInterval timeInterval = new TimeInterval(new TimeStamp(selectedInterval.a, TimeStampType.TimeOfRecord, true), //!Hardcoded time stamp type
-                        new TimeStamp(selectedInterval.b, TimeStampType.TimeOfRecord, true));                                      //!Hardcoded time stamp type
+                TimeInterval timeInterval = new TimeInterval(new TimeStamp(selectedInterval.a, TimeStampType.TimeOfRecord, true),
+                        new TimeStamp(selectedInterval.b, TimeStampType.TimeOfRecord, true));                                      
                 s = new TimeIntervalSelectionImpl(timeInterval);
                 content.add(s);
                 break;
@@ -157,13 +157,13 @@ public class SelectionProvider implements TimeSelectionListener {
     }
 
     private void addSeriesTree(SeriesWrapper s, InstanceContent cont, long l) {
-        ValueWrapper value = s.getValue(l, TimeStampType.TimeOfRecord); //!Hardcoded time stamp type.
+        ValueWrapper value = s.getValue(l, TimeStampType.TimeOfRecord); 
         addTreeToLookup(value, cont);
         providedTreeRoots.add(value);
     }
 
     private void addSeriesTree(SeriesWrapper s, InstanceContent cont, LongRange l) {
-        Collection<ValueWrapper> intervalSummary = s.getIntervalSummary(l.a, l.b, TimeStampType.TimeOfRecord); //!Hardcoded time stamp type.
+        Collection<ValueWrapper> intervalSummary = s.getIntervalSummary(l.a, l.b, TimeStampType.TimeOfRecord); 
         for (ValueWrapper summary : intervalSummary) {
             addTreeToLookup(summary, cont);
             providedTreeRoots.add(summary);

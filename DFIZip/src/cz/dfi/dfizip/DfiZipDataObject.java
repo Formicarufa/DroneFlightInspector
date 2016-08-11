@@ -81,6 +81,10 @@ import org.openide.util.NbBundle.Messages;
             position = 1400
     )
 })
+/**
+ * Ensures that it is possible to open the DFI file.
+ * Registers the action (cookie) that should be invoked when the file is opened.
+ */
 public class DfiZipDataObject extends MultiDataObject {
 
     public DfiZipDataObject(FileObject pf, MultiFileLoader loader) throws DataObjectExistsException, IOException {

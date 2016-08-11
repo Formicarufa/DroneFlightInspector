@@ -3,7 +3,6 @@
 
 package cz.dfi.recorddataprovider;
 
-import cz.dfi.recorddataprovider.TimeToStringConverter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

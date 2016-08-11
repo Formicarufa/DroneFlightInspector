@@ -9,7 +9,10 @@ import org.jfree.data.general.DatasetChangeEvent;
 import org.jfree.data.xy.AbstractXYDataset;
 
 /**
- *
+ * Dataset that applies transformations on  numbers before passing them
+ * to the graph drawing library.
+ * If the set of quantities that should be graphed changes, this dataset
+ * has to be notified by calling the {@link #resultChanged(java.util.Collection) }
  * @author Tomas Prochazka 23.12.2015
  */
 public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
@@ -71,7 +74,6 @@ public class MultipleModifiableGraphsDataset extends AbstractXYDataset {
         int i = 0;
         for (GraphedQuantity q : quantitiesList) {
             quantities[i] = q;
-            //TODO: change if time on board is required
             timeValues[i] = q.quantity.getTimeStamps().getRecorderValues();
             values[i] = q.quantity.getValuesAsDoubles();
             i++;

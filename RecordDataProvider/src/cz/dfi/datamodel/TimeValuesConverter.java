@@ -9,7 +9,11 @@ import org.netbeans.api.annotations.common.CheckForNull;
 import org.openide.util.Lookup;
 
 /**
- *
+ * Interface of a service that is able to, for a value of a certain {@link TimeStampType}, 
+ * estimate the time value in a different {@link TimeStampType}.
+ * If this service is registered in the global lookup, {@link cz.dfi.datamodel.series.TimeStampArray}s are
+ * able to provide the values even with a different time stamp than that
+ * available from the recording.
  * @author Tomas Prochazka
  * 21.12.2015
  */
@@ -26,6 +30,12 @@ public interface TimeValuesConverter {
      */
     Long boardTimeToRecordTime(long time, boolean outcoming);
     
+    /**
+     * @see #boardTimeToRecordTime(long, boolean) 
+     * @param times
+     * @param outcoming
+     * @return 
+     */
     default long[] onboardTimeToRecordTime(long[] times, boolean outcoming) {
         long[] res = new long[times.length];
         for (int i = 0; i < times.length; i++) {
@@ -47,6 +57,12 @@ public interface TimeValuesConverter {
      * @return 
      */
     Long recordTimeToOnboardTime(long time, boolean outcoming);
+    /**
+     * @see #recordTimeToOnboardTime(long, boolean) 
+     * @param times
+     * @param outcoming
+     * @return 
+     */
     default long[] recordTimeToBoardTime(long[] times, boolean outcoming){
         long[] res = new long[times.length];
         for (int i = 0; i < times.length; i++) {

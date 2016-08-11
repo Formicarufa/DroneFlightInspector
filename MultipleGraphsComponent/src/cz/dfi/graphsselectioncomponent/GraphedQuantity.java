@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
+ * An instance of this class is published into the lookup for every quantity
+ * that should be graphed.
+ * Stores the properties of the graphed quantity. 
+ * Listeners can be notified about a change of property.
  * @author Tomas Prochazka 21.12.2015
  */
 public final class GraphedQuantity {

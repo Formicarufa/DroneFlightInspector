@@ -20,7 +20,9 @@ import javafx.scene.transform.Transform;
 import org.openide.modules.InstalledFileLocator;
 
 /**
- *
+ * Manages the content of the 3D scene.
+ * The method {@link #setEulerAngleRotation(double, double, double)} has to be
+ * called to set the rotation of the AR.Drone model.
  * @author Tomas Prochazka 22.5.2016
  */
 public class Attitude3DView {
@@ -38,14 +40,12 @@ public class Attitude3DView {
         scene.setCamera(camera);
         camera.setFarClip(200);
         camera.setFieldOfView(60);
-        camera.setTranslateZ(-2);
-        //root.setTranslateX(300);        
-        //root.setTranslateY(300);
+        camera.setTranslateZ(-2);   
         return scene;
     }
 
     private static Node[] loadDroneMesh() {
-        //http://wiki.netbeans.org/DevFaqInstalledFileLocator
+        //See: http://wiki.netbeans.org/DevFaqInstalledFileLocator
         File file = InstalledFileLocator.getDefault().locate(
                 MESH_NAME,
                 "cz.dfi.attitude3d",
@@ -61,6 +61,7 @@ public class Attitude3DView {
     /**
      *  The rotations will be applied in the following order:
      * roll -> pitch -> yaw
+     * yaw -> roll -> pitch
      * Unit: degrees.
      * Has to be called from the JavaFX thread.
      * Use {@link Platform#runLater(java.lang.Runnable) }
@@ -72,21 +73,23 @@ public class Attitude3DView {
         ObservableList<Transform> transforms = droneModel.getTransforms();
         transforms.clear();
         //PHI - THETA - PSI ... roll - pitch - yaw
-        Point3D rollAxis = new Point3D(0, 0, 1);
-        Point3D pitchAxis = new Point3D(1,0,0);
-        Point3D yawAxis = new Point3D(0,1,0);
-        
-        Rotate rollRot = new Rotate(roll, rollAxis);
-        Point3D pitchAxis1 = rollRot.transform(pitchAxis);
-        Point3D yawAxis1 = rollRot.transform(yawAxis);
-        transforms.add(rollRot);
-        
-        Rotate pitchRot = new Rotate( pitch,pitchAxis1);
-        Point3D yawAxis2 = pitchRot.transform(yawAxis1);
-        transforms.add(pitchRot);
-        
-        Rotate yawRot = new Rotate(yaw,yawAxis2);
-        transforms.add(yawRot);
+        Point3D rollAxis = new Point3D(0, 0, 1);  // x axis for the drone, z axis in JavaFX: away from the viewer.
+        Point3D pitchAxis = new Point3D(1,0,0);     //y axis for the drone, x axis in JavaFX: to the right
+        Point3D yawAxis = new Point3D(0,1,0);       //z axis for the drone, y axis in Java FX: pointing down
+     
+        // It appears that JavaFX automatically transforms the axes of rotation!
+          Rotate yawRot = new Rotate(yaw, yawAxis);
+          Point3D pitchAxis1 = yawRot.transform(pitchAxis);
+          //Point3D rollAxis1 = yawRot.transform(rollAxis);
+          
+          Rotate rollRot = new Rotate(roll, rollAxis);
+         // Point3D pitchAxis2 = rollRot.transform(pitchAxis1);
+          
+          Rotate pitchRot = new Rotate(pitch,pitchAxis); 
+          
+          transforms.add(yawRot);
+          transforms.add(pitchRot);
+          transforms.add(rollRot);        
     }
         
     private Group createSceneContent() {
@@ -96,7 +99,7 @@ public class Attitude3DView {
         droneModel.setScaleZ(.25);
         droneModel.setScaleY(.25);
         droneModel.setTranslateZ(40);
-        droneModel.setRotationAxis(new Point3D(0,1,0));
+       // droneModel.setRotationAxis(new Point3D(0,1,0));
         //droneModel.setRotate(180);
 //        Timeline anim = new Timeline(new KeyFrame(Duration.millis(200), (ActionEvent event) -> {
 //             droneModel.setRotate(droneModel.getRotate()+2);

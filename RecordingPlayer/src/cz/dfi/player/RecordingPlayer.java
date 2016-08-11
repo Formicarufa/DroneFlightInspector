@@ -5,14 +5,14 @@
  */
 package cz.dfi.player;
 
-import cz.dfi.datamodel.SetTimeRequest;
+import cz.dfi.timeselection.SetTimeRequest;
 import cz.dfi.datamodel.TimeSelectionLayer;
 import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;
-import cz.dfi.timecomponent.selection.TimeIntervalSelection;
-import cz.dfi.timecomponent.selection.TimeValueSelection;
+import cz.dfi.timeselection.TimeIntervalSelection;
+import cz.dfi.timeselection.TimeValueSelection;
 import java.util.Collection;
 import java.util.stream.Stream;
 import org.openide.util.*;
@@ -20,7 +20,10 @@ import org.openide.util.lookup.InstanceContent;
 
 /**
  * 23.6.2016
- *
+ * An action that enables replay of the recording.
+ * Runs on a separate thread, continuously moves the time selection.
+ * <p>
+ * Can be stopped by another thread by calling the {@link #stop() } method.
  * @author Tomas Prochazka
  */
 public class RecordingPlayer implements Runnable {

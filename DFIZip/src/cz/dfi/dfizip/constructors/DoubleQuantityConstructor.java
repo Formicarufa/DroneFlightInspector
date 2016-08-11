@@ -12,7 +12,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.Lookup;
-
+/**
+ *  Constructs a series of double values.
+ *  Provides the parsing algorithm with {@link ValueReader} that can read doubles.
+ *  The reader is used to read values in a single column of the CSV file and 
+ * @author Tomas Prochazka
+ */
 public class DoubleQuantityConstructor implements SingleSeriesConstructor {
 
     DoubleReader reader = new DoubleReader();

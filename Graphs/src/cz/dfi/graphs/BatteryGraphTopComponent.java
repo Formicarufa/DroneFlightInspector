@@ -19,6 +19,11 @@ import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays battery percentage graph.
+ * <p>
+ * Contains jFreeChart panel.
+ * <p>
+ * Tracks the {@link BatteryPercentWrapper} in the {@link FileLookup} and uses the 
+ * {@link SimpleTimeDataset"} to plot the values.
  */
 @TopComponent.Description(
         preferredID = "BatteryGraphTopComponent",
@@ -34,8 +39,8 @@ import org.openide.windows.TopComponent;
 )
 @Messages({
     "CTL_BatteryGraphAction=BatteryGraph",
-    "CTL_BatteryGraphTopComponent=BatteryGraph Window",
-    "HINT_BatteryGraphTopComponent=This is a BatteryGraph window"
+    "CTL_BatteryGraphTopComponent=Battery Graph Window",
+    "HINT_BatteryGraphTopComponent=Displays a plot with battery percentage in time"
 })
 public final class BatteryGraphTopComponent extends TopComponent implements LookupListener {
 

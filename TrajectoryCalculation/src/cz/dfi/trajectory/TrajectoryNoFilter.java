@@ -3,7 +3,7 @@
 package cz.dfi.trajectory;
 
 import cz.dfi.datamodel.common.RotationWrapper;
-import cz.dfi.datamodel.common.SpeedWrapper;
+import cz.dfi.datamodel.common.VelocityWrapper;
 import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.values.TimeStamp;
@@ -12,8 +12,9 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Default algorithm for computing the trajectory.
  * In order to compute the trajectory the lookup has to contain an instance of
- * {@link SpeedWrapper} and {@link RotationWrapper} classes. Moreover, both
+ * {@link VelocityWrapper} and {@link RotationWrapper} classes. Moreover, both
  * these series have to have the same time stamps.
  *
  * @author Tomas Prochazka 17.6.2016
@@ -23,7 +24,7 @@ public class TrajectoryNoFilter implements TrajectoryAlgorithm {
 
     @Override
     public Trajectory computeTrajectory(Lookup inputData) {
-        SpeedWrapper speed = inputData.lookup(SpeedWrapper.class);
+        VelocityWrapper speed = inputData.lookup(VelocityWrapper.class);
         RotationWrapper rotation = inputData.lookup(RotationWrapper.class);
         TimeStampArray timeStamps = speed.getTimeStamps();
         double[] xValues = new double[timeStamps.size()];
@@ -39,7 +40,7 @@ public class TrajectoryNoFilter implements TrajectoryAlgorithm {
             // onboard values are prefered, but recorder values can also be used
             timeStamps.getRecorderValues();
         }
-        Trajectory result = new Trajectory(timeStamps, xValues, yValues, "Trajectory with no filter applied");
+        Trajectory result = new Trajectory(timeStamps, xValues, yValues, "Trajectory with removed navdata gaps");
         if (yawValues.length == 0) {
             return result;
         }
@@ -49,7 +50,7 @@ public class TrajectoryNoFilter implements TrajectoryAlgorithm {
         //Calculate the initial velocity in x and y:
         sx = speedX[0];
         sy = speedY[0];
-        yaw = Math.toRadians(toDeg.convert(yawValues[0], unit));
+        yaw = -Math.toRadians(toDeg.convert(yawValues[0], unit));
         sin = Math.sin(yaw);
         cos = Math.cos(yaw);
         //Recalculate the x and y speed from the local frame to the global frame.
@@ -60,9 +61,9 @@ public class TrajectoryNoFilter implements TrajectoryAlgorithm {
         lastt = timeVals[0];
         for (int i = 1; i < yawValues.length; i++) {
             sx = speedX[i];
-            sy = speedY[i];
+            sy = -speedY[i];
             t = timeVals[i];
-            yaw = Math.toRadians(toDeg.convert(yawValues[i], unit));
+            yaw = -Math.toRadians(toDeg.convert(yawValues[i], unit));
             sin = Math.sin(yaw);
             cos = Math.cos(yaw);
             //Recalculate the x and y speed from the local frame to the global frame.
@@ -70,9 +71,15 @@ public class TrajectoryNoFilter implements TrajectoryAlgorithm {
             dy = sx * sin + sy * cos;
             // Take the average value, assuming that the velocity in each direction has been changing as a linear function.
             dt = TimeStamp.deltaSec(lastt, t);
-            xValues[i] = xValues[i - 1] + (dx + lastdx) / 2 * dt;
-            yValues[i] = yValues[i - 1] + (dy + lastdy) / 2 * dt;
-            
+            if (dt < .02) {
+                xValues[i] = xValues[i - 1] + (dx + lastdx) / 2 * dt;
+                yValues[i] = yValues[i - 1] + (dy + lastdy) / 2 * dt;
+            } else {
+                //ignore if we have no data available
+                xValues[i] = xValues[i - 1] + (dx + lastdx) / 2 * .020;
+                yValues[i] = yValues[i - 1] + (dy + lastdy) / 2 * .020;
+            }
+
             lastdx = dx;
             lastdy = dy;
             lastt = t;
@@ -82,7 +89,7 @@ public class TrajectoryNoFilter implements TrajectoryAlgorithm {
 
     @Override
     public boolean canComputeTrajectory(Lookup inputData) {
-        SpeedWrapper speed = inputData.lookup(SpeedWrapper.class);
+        VelocityWrapper speed = inputData.lookup(VelocityWrapper.class);
         if (speed == null) {
             return false;
         }

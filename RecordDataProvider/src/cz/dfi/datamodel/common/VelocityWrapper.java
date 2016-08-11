@@ -5,20 +5,19 @@ package cz.dfi.datamodel.common;
 import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.series.TopLevelSeriesGroupWrapper;
-import org.netbeans.api.annotations.common.CheckForNull;
 import org.netbeans.api.annotations.common.NullUnknown;
 
 /**
  * Unit convention: arbitrary unit PER SECOND (this is assumed by the trajectory algorithm.)
  * @author Tomas Prochazka 24.12.2015
  */
-public class SpeedWrapper extends TopLevelSeriesGroupWrapper {
+public class VelocityWrapper extends TopLevelSeriesGroupWrapper {
 
     private DoubleQuantity speedx;
     private DoubleQuantity speedy;
     private DoubleQuantity speedz;
 
-    public SpeedWrapper(String unit, TimeStampArray timeStamps, double[] xValues, double[] yValues, double[] zValues) {
+    public VelocityWrapper(String unit, TimeStampArray timeStamps, double[] xValues, double[] yValues, double[] zValues) {
         this(timeStamps);
         this.addChildren(
                 new DoubleQuantity(xValues, "Speed in x", unit, timeStamps),
@@ -37,7 +36,7 @@ public class SpeedWrapper extends TopLevelSeriesGroupWrapper {
      *
      * @param timeStamps
      */
-    public SpeedWrapper(TimeStampArray timeStamps) {
+    public VelocityWrapper(TimeStampArray timeStamps) {
         super(NAME, timeStamps);
     }
     public static final String NAME = "Velocity";
@@ -53,7 +52,7 @@ public class SpeedWrapper extends TopLevelSeriesGroupWrapper {
     @NullUnknown
     public DoubleQuantity getSpeedY() {
         if (speedy == null) {
-            speedy = getChildWithNameContaining(" y", "y ");
+            speedy = getChildWithNameContaining(" y", "y vel");
         }
         return speedy;
     }

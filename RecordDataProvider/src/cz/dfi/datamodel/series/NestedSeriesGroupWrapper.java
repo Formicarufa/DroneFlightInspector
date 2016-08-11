@@ -11,7 +11,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- *
+ * A group of series that has a parent group.
+ * Use {@link #create(java.lang.String, cz.dfi.datamodel.series.SeriesGroupWrapper) }.
+ * or {@link #create(java.lang.String, cz.dfi.datamodel.series.TimeStampArray)  to 
+ * create a group.
  * @author Tomas Prochazka
  * 28.2.2016
  */

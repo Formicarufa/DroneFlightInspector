@@ -42,7 +42,19 @@ import org.xml.sax.SAXException;
 import providers.ConstructorProvider;
 
 /**
- *
+ * An importer that parses the DFI Zip files.
+ * DOM parser is used to read the XML description.
+ * {@link SeriesConstructor} is created for each series in the XML description by
+ *  a class that implement {@link ConstructorProvider}.
+ * Constructor Providers are loaded from the the global lookup.
+ * New Constructor Providers can be registered as services.
+ * {@link SeriesConstructor} is used to get the {@link cz.dfi.dfizip.readers.ValueReader }
+ * that is capable of reading values from String representation, in which
+ * they are stored in the CSV files inside of th DFI Zip file
+ *  The reader is used to read values in a single column of the CSV file.
+ * The reader even  stores the read values. After the file is parsed, 
+ * the series constructor is 
+ * called again to construct the series with the values from the value reader.
  * @author Tomas Prochazka 4.5.2016
  */
 @ServiceProvider(service = cz.dfi.fileimporertinterface.FileImporter.class)

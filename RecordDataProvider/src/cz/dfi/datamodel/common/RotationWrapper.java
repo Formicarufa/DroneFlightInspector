@@ -20,6 +20,8 @@ import org.netbeans.api.annotations.common.NullUnknown;
 public class RotationWrapper extends TopLevelSeriesGroupWrapper {
 
     private DoubleQuantity roll;
+    private DoubleQuantity pitch;
+    private DoubleQuantity yaw;
 
     /**
      *
@@ -74,18 +76,18 @@ public class RotationWrapper extends TopLevelSeriesGroupWrapper {
 
     @NullUnknown
     public DoubleQuantity getPitch() {
-        if (roll == null) {
-            roll = getChildWithNameContaining("pitch");
+        if (pitch == null) {
+            pitch = getChildWithNameContaining("pitch");
         }
-        return roll;
+        return pitch;
     }
 
     @NullUnknown
     public DoubleQuantity getYaw() {
-        if (roll == null) {
-            roll = getChildWithNameContaining("yaw");
+        if (yaw == null) {
+            yaw = getChildWithNameContaining("yaw");
         }
-        return roll;
+        return yaw;
     }
 
 }

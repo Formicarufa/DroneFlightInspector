@@ -2,7 +2,7 @@
  */
 package cz.dfi.graphs;
 
-import cz.dfi.datamodel.common.SpeedWrapper;
+import cz.dfi.datamodel.common.VelocityWrapper;
 import cz.dfi.datamodel.series.SeriesGroupWrapper;
 import cz.dfi.recorddataprovider.FileLookup;
 import java.awt.BorderLayout;
@@ -19,7 +19,12 @@ import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Top component which displays graph of velocity in x, y and z.
+ * Top component which displays graphs of velocity in x, y and z.
+  * <p>
+ * Contains jFreeChart panel.
+ * <p>
+ * Tracks the {@link VelocityWrapper} in the {@link FileLookup} and uses the 
+ * {@link MultipleValuesDataset"} to plot the values.
  */
 @TopComponent.Description(
         preferredID = "VelocityGraphTopComponent",
@@ -43,22 +48,19 @@ public final class VelocityGraphTopComponent extends TopComponent implements Loo
     private static final long serialVersionUID = 1L;
     private final MultipleValuesDataset dataSet;
     private final JFreeChart chart;
-    private final Lookup.Result<SpeedWrapper> velocityResult;
+    private final Lookup.Result<VelocityWrapper> velocityResult;
 
     public VelocityGraphTopComponent() {
         initComponents();
         setName(Bundle.CTL_VelocityGraphTopComponent());
         setToolTipText(Bundle.HINT_VelocityGraphTopComponent());
         dataSet = new MultipleValuesDataset();
-//        chart = ChartFactory.createXYLineChart(null,
-//                "Time [sec]", "Distance [cm/s]", dataSet, PlotOrientation.VERTICAL, true, true,
-//                false);
         chart = ChartFactory.createTimeSeriesChart(null, "Time [sec]", "Velocity", dataSet, true, true, false);
         ChartPanel cp = new ChartPanel(chart);
         jPanel1.setLayout(new BorderLayout());
         GraphsCommon.setupChart(chart);
         jPanel1.add(cp);
-        velocityResult = FileLookup.getDefault().lookupResult(SpeedWrapper.class);
+        velocityResult = FileLookup.getDefault().lookupResult(VelocityWrapper.class);
     }
 
     /**
@@ -110,7 +112,7 @@ public final class VelocityGraphTopComponent extends TopComponent implements Loo
 
     @Override
     public void resultChanged(LookupEvent ev) {
-        Collection<? extends SpeedWrapper> res = velocityResult.allInstances();
+        Collection<? extends VelocityWrapper> res = velocityResult.allInstances();
         if (res.isEmpty()) {
             dataSet.clear();
         } else {

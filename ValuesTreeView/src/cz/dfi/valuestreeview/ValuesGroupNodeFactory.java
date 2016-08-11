@@ -12,6 +12,8 @@ import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Node;
 
 /**
+ * Generates a node for each children of a given group.
+ * 
  * 6.3.2016
  *
  * @author Tomas Prochazka

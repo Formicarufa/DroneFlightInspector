@@ -7,9 +7,9 @@
 package cz.dfi.multiplegraphscomponent;
 
 import cz.dfi.recorddataprovider.FileLookup;
-import cz.dfi.timecomponent.selection.TimeIntervalSelection;
-import cz.dfi.timecomponent.selection.TimeSelection;
-import cz.dfi.timecomponent.selection.TimeValueSelection;
+import cz.dfi.timeselection.TimeIntervalSelection;
+import cz.dfi.timeselection.TimeSelection;
+import cz.dfi.timeselection.TimeValueSelection;
 import java.awt.Color;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.ValueMarker;
@@ -19,6 +19,8 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 
 /**
+ * Tracks the selection in the lookup and highlights the part of the
+ * graph corresponding to the selection.
  * 7.3.2016
  * @author Tomas Prochazka
  */
@@ -45,16 +47,16 @@ public final class SelectionHighlighter implements LookupListener{
         TimeValueSelection value = l.lookup(TimeValueSelection.class);
         plot.clearDomainMarkers();
         if (value!=null) {                                                                      //To millis conversion
-            ValueMarker valueMarker = new ValueMarker(value.getSelectedValue().getRecorderValue()/1_000_000); //!Hardcoded time stamp type 
+            ValueMarker valueMarker = new ValueMarker(value.getSelectedValue().getRecorderValue()/1_000_000); 
             plot.addDomainMarker(valueMarker);
             valueMarker.setPaint(ORANGE);
             return;
         } 
         TimeIntervalSelection interval = l.lookup(TimeIntervalSelection.class);
         if (interval!=null) {
-            long l1 = interval.getSelectedInterval().t1.getRecorderValue();//!Hardcoded time stamp type
-            long l2 = interval.getSelectedInterval().t2.getRecorderValue();//!Hardcoded time stamp type
-            IntervalMarker marker = new IntervalMarker(l1/1_000_000, l2/1_000_000); //To millis conversion
+            long l1 = interval.getSelectedInterval().t1.getRecorderValue();
+            long l2 = interval.getSelectedInterval().t2.getRecorderValue();
+            IntervalMarker marker = new IntervalMarker(l1/1_000_000, l2/1_000_000); 
             marker.setPaint(ORANGE);
             marker.setAlpha(.3f);
             plot.addDomainMarker(marker);

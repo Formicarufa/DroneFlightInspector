@@ -10,7 +10,9 @@ import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;
 
 /**
- *
+ * Encapsulates a single double value with a time information
+ * attached to it. 
+ * @see DoubleQuantity
  * @author Tomas Prochazka
  */
 public class DoubleValueWrapper extends AbstractValueWrapper{

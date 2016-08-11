@@ -10,6 +10,7 @@ import java.util.Collection;
 /**
  *
  * @author Tomas Prochazka
+ * @see ValueWrapper
  */
 public abstract class AbstractValueWrapper implements ValueWrapper{
     protected final String name;

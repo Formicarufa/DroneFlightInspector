@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.jfree.chart.ChartColor;
 
 /**
- *Assigns unused color to the quantity that will be drawn on graph.
+ *Assigns unused color to the quantity that will be drawn on the graph.
  * @author Tomas Prochazka
  * 10.1.2016
  */

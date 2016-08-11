@@ -7,7 +7,7 @@
 package cz.dfi.timecomponent.selectionimpl;
 
 import cz.dfi.datamodel.values.TimeInterval;
-import cz.dfi.timecomponent.selection.TimeIntervalSelection;
+import cz.dfi.timeselection.TimeIntervalSelection;
 
 
 public class TimeIntervalSelectionImpl implements TimeIntervalSelection {

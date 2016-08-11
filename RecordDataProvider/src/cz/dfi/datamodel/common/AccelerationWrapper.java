@@ -10,7 +10,8 @@ import cz.dfi.datamodel.series.TimeStampArray;
 import cz.dfi.datamodel.series.TopLevelSeriesGroupWrapper;
 
 /**
- *
+ *A special wrapper for acceleration, which is expected to contain three
+ * double quantities with accelerations in x-axis, y-axis and z-axis
  * @author Tomas Prochazka
  */
 public class AccelerationWrapper extends TopLevelSeriesGroupWrapper{

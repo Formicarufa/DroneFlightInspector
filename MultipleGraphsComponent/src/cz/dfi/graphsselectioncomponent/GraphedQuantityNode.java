@@ -19,6 +19,9 @@ import org.openide.util.lookup.InstanceContent;
  * graph quantity to the components that display the information and let user to
  * update it. (Modify the resulting graph.)
  *
+ *  To ensure that the check box is drawn next to each quantity name,
+ * each child node implements the interface CheckableNode 
+ * and puts itself into its own lookup.
  * @author Tomas Prochazka 22.12.2015
  */
 public class GraphedQuantityNode extends AbstractNode implements CheckableNode {

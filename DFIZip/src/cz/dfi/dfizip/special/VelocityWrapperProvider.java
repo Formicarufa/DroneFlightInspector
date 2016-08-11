@@ -1,24 +1,27 @@
 /*
  */
-
 package cz.dfi.dfizip.special;
 
-import cz.dfi.datamodel.common.SpeedWrapper;
+import cz.dfi.datamodel.common.VelocityWrapper;
 import cz.dfi.datamodel.series.SeriesGroupWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
 import org.openide.util.lookup.ServiceProvider;
 
+/**
+ * @see SpecialGroupProvider
+ * @author Tomas Prochazka
+ */
 @ServiceProvider(service = SpecialGroupProvider.class)
-public class SpeedWrapperProvider implements SpecialGroupProvider {
+public class VelocityWrapperProvider implements SpecialGroupProvider {
 
     @Override
     public String getName() {
-        return SpeedWrapper.NAME;
+        return VelocityWrapper.NAME;
     }
 
     @Override
     public SeriesGroupWrapper getGroup(TimeStampArray timeStamps) {
-        return new SpeedWrapper(timeStamps);
+        return new VelocityWrapper(timeStamps);
     }
 
 }

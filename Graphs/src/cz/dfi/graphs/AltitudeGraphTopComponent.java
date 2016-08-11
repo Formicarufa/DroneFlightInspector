@@ -2,24 +2,13 @@
  */
 package cz.dfi.graphs;
 
-import cz.dfi.datamodel.FlightDataRecord;
 import cz.dfi.datamodel.common.AltitudeWrapper;
 import cz.dfi.recorddataprovider.FileLookup;
-import cz.dfi.recorddataprovider.TimeToStringConverter;
-import cz.dfi.recorddataprovider.caching.CachedDataProvider;
-import cz.dfi.recorddataprovider.caching.CachedDataReceiver;
 import java.awt.BorderLayout;
-import java.text.DateFormat;
 import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.DateAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.DefaultXYDataset;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
@@ -29,7 +18,12 @@ import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Top component which displays something.
+ * Top component which displays plot of altitude.
+ * <p>
+ * Contains jFreeChart panel.
+ * <p>
+ * Tracks the {@link AltitudeWrapper} in the {@link FileLookup} and uses the 
+ * {@link SimpleTimeDataset"} to plot the values.
  */
 @TopComponent.Description(
         preferredID = "AltitudeGraphTopComponent",
@@ -46,7 +40,7 @@ import org.openide.util.NbBundle.Messages;
 @Messages({
     "CTL_AltitudeGraphAction=AltitudeGraph",
     "CTL_AltitudeGraphTopComponent=Altitude Graph Window",
-    "HINT_AltitudeGraphTopComponent=This is a Altitude Graph window"
+    "HINT_AltitudeGraphTopComponent=A plot of altitude in time"
 })
 public final class AltitudeGraphTopComponent extends TopComponent implements LookupListener {
 
@@ -59,9 +53,6 @@ public final class AltitudeGraphTopComponent extends TopComponent implements Loo
     public AltitudeGraphTopComponent() {
         initComponents();
         dataSet = new SimpleTimeDataset();
-//        chart = ChartFactory.createXYLineChart(null,
-//                "Time [sec]", "Altitude [cm]", dataSet, PlotOrientation.VERTICAL, false, true,
-//                false);
         chart = ChartFactory.createTimeSeriesChart(null, "Time [sec]", "Altitude [cm]", dataSet, false, true, false);
         ChartPanel cp = new ChartPanel(chart);
         GraphsCommon.setupChart(chart);

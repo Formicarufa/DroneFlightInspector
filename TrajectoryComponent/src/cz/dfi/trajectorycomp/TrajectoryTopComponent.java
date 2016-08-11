@@ -5,15 +5,12 @@ package cz.dfi.trajectorycomp;
 import cz.dfi.recorddataprovider.FileLookup;
 import cz.dfi.trajectory.Trajectory;
 import java.util.Collection;
-import java.util.Iterator;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.xy.XYDataset;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -24,8 +21,10 @@ import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Top component which displays something.
- */
+ * Top component which displays a 2D chart with trajectory.
+ * The window contains a single jFreeChart panel.
+ * Instances of {@link  Trajectory} are tracked in the {@link FileLookup}. 
+ */ 
 @ConvertAsProperties(
         dtd = "-//cz.dfi.trajectorycomp//Trajectory//EN",
         autostore = false
@@ -45,7 +44,7 @@ import org.openide.util.NbBundle.Messages;
 @Messages({
     "CTL_TrajectoryAction=Trajectory",
     "CTL_TrajectoryTopComponent=Trajectory Window",
-    "HINT_TrajectoryTopComponent=This is a Trajectory window"
+    "HINT_TrajectoryTopComponent=Displays an estimated trajectory of the drone."
 })
 public final class TrajectoryTopComponent extends TopComponent {
 
@@ -117,12 +116,10 @@ public final class TrajectoryTopComponent extends TopComponent {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
-        // TODO store your settings
     }
 
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
-        // TODO read your settings according to their version
     }
 
 }

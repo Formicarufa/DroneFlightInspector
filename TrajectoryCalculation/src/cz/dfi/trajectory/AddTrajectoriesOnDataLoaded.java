@@ -8,9 +8,13 @@ import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Puts trajectory data into the lookup. More precisely, only a delegate is put
+ * Puts trajectory data into the lookup.
+ * <p> 
+ * More precisely, only a delegate is put
  * into the lookup which calls the trajectory evaluation algorithm the first
- * time the result is requested. Multiple algorithms for trajectory evaluation
+ * time the result is requested. 
+ * <p>
+ * Multiple algorithms for trajectory evaluation
  * can exist, all of them are added into the lookup. This class is registered as
  * a service which is called for each newly opened file.
  *

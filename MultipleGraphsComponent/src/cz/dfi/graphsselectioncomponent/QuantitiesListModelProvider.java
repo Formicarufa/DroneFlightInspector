@@ -4,21 +4,18 @@ package cz.dfi.graphsselectioncomponent;
 
 import cz.dfi.datamodel.graphable.GraphableQuantity;
 import cz.dfi.recorddataprovider.FileLookup;
-import java.awt.Paint;
-import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.jfree.chart.ChartColor;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 
 /**
- *
+ * Generates a collection of nodes for available quantities.
+ * Updates the collection if available quantities change. 
  * @author Tomas Prochazka 22.12.2015
  */
 public class QuantitiesListModelProvider extends Children.Keys<GraphedQuantityNode> implements LookupListener {

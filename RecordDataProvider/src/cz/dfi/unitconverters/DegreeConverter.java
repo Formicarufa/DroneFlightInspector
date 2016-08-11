@@ -11,6 +11,13 @@ import org.openide.util.Lookup;
 /**
  * Classes implementing this interface perform a conversion
  * of a given value to degrees.
+ * <p>
+ * To convert to degrees, use the static method 
+ * {@link #convertToDegrees(double, java.lang.String) 
+ * <p>
+ * The converters are registered as services. It is possible to register
+ * a new converters.
+ * 
  * @author Tomas Prochazka
  * 24.5.2016
  */

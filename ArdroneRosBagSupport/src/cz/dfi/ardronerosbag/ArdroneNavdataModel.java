@@ -3,26 +3,24 @@
 package cz.dfi.ardronerosbag;
 
 import cz.dfi.datamodel.common.AltitudeWrapper;
-import cz.dfi.datamodel.FlightDataRecord;
 import cz.dfi.datamodel.ImportHelper;
 import cz.dfi.datamodel.common.AccelerationWrapper;
 import cz.dfi.datamodel.common.BatteryPercentWrapper;
 import cz.dfi.datamodel.common.MagnetometerWrapper;
 import cz.dfi.datamodel.common.MotorsWrapper;
 import cz.dfi.datamodel.common.RotationWrapper;
-import cz.dfi.datamodel.common.SpeedWrapper;
+import cz.dfi.datamodel.common.VelocityWrapper;
 import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.series.SeriesGroupWrapper;
 import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.datamodel.series.TimeStampArray;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
 import org.openide.util.lookup.InstanceContent;
 
 /**
- *
+ * Converts the navigation data loaded from the ROS bag file into series and puts them into the lookup.
  * @author Tomas Prochazka 22.12.2015
  */
 public class ArdroneNavdataModel {
@@ -64,7 +62,7 @@ public class ArdroneNavdataModel {
         final AltitudeWrapper altitudeWrapper = new AltitudeWrapper(altitudes, "cm", timeStamps);
         final BatteryPercentWrapper batteryWrapper = new BatteryPercentWrapper(batteryLevels, timeStamps);
         final MotorsWrapper motorsWrapper = new MotorsWrapper(timeStamps, motor1Powers, motor2Powers, motor3Powers, motor4Powers);
-        final SpeedWrapper speedWrapper = new SpeedWrapper("mm/sec", timeStamps, speedX, speedY, speedZ);
+        final VelocityWrapper speedWrapper = new VelocityWrapper("mm/sec", timeStamps, speedX, speedY, speedZ);
         final MagnetometerWrapper magWrapper = new MagnetometerWrapper("??", timeStamps, magX, magY, magZ);
         final DoubleQuantity pressureWrapper = new DoubleQuantity(pressure, "Pressure", "Pa", timeStamps);
         DoubleQuantity tempWrapper = new DoubleQuantity(temperatures, "Temperature", "??", timeStamps);

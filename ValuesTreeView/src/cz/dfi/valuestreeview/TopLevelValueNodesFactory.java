@@ -25,7 +25,10 @@ import org.openide.util.LookupListener;
 
 /**
  * 6.3.2016
- *
+ *Generates the tree of value that is displayed in the tree view,
+ * Tracks the changes of {@link ValuesTreeConsistent } in the lookup.
+ * After the tree changes its consistency state to consistent,
+ * the child nodes are updated.
  * @author Tomas Prochazka
  */
 public class TopLevelValueNodesFactory extends ChildFactory<ValueWrapper> {

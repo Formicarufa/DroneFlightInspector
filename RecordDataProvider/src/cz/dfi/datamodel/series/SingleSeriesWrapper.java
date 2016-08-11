@@ -7,7 +7,8 @@ import java.util.Collection;
 import org.netbeans.api.annotations.common.CheckForNull;
 
 /**
- *
+ * A {@link SeriesWrapper} that provides default implementation of
+ * {@link #getChildren() }
  * @author Tomas Prochazka
  * 27.2.2016
  */

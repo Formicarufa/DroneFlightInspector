@@ -6,6 +6,7 @@
 
 package cz.dfi.valuestreeview;
 
+import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.graphable.DoubleValueWrapper;
 import cz.dfi.datamodel.values.ValueWrapper;
 import org.openide.nodes.AbstractNode;
@@ -13,6 +14,13 @@ import org.openide.nodes.Children;
 import org.openide.util.lookup.Lookups;
 
 /**
+ * Represents a single value.
+ * Converts it to string using
+ * {@link ValueWrapper#getValueAsString() } 
+ * and puts it to the display name.
+ * <p>
+ * If the {@link ValueWrapper} is {@link DoubleQuantity}
+ * unit is displayed as a tooltip.
  * 6.3.2016
  * @author Tomas Prochazka
  */

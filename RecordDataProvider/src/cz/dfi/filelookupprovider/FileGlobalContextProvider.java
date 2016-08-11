@@ -74,5 +74,4 @@ public class FileGlobalContextProvider implements ContextGlobalProvider, Lookup.
             currentGlobal = new ProxyLookup(fileLookup,activated.getLookup());
         }
     }
-
 }

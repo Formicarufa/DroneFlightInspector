@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package cz.dfi.datamodel;
+package cz.dfi.timeselection;
 
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.TimeStamp;

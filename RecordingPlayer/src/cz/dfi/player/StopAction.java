@@ -13,7 +13,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
-        category = "Bugtracking",
+        category = "RecordingPlayer",
         id = "cz.dfi.player.StopAction"
 )
 @ActionRegistration(
@@ -22,6 +22,9 @@ import org.openide.util.NbBundle.Messages;
 )
 @ActionReference(path = "Toolbars/File", position = 550)
 @Messages("CTL_StopAction=Pause")
+/**
+ * 
+ */
 public final class StopAction implements ActionListener {
 
     private final StopCookie context;

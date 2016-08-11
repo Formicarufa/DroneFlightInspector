@@ -113,7 +113,10 @@
                 </dependency>
             </module-dependencies>
             <public-packages>
+                <package>cz.dfi.dfizip.constructors</package>
+                <package>cz.dfi.dfizip.readers</package>
                 <package>cz.dfi.dfizip.special</package>
+                <package>providers</package>
             </public-packages>
         </data>
     </configuration>

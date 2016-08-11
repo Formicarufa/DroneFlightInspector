@@ -3,8 +3,6 @@
 
 package cz.dfi.datamodel.series;
 
-import cz.dfi.datamodel.TimeStampType;
-
 /**
  * Series which implements this interface declares that it will be used as nested:
  * that means that it will inside of the Series hierarchy always be contained in some group.

@@ -5,19 +5,34 @@ package cz.dfi.datamodel.series;
 import cz.dfi.datamodel.TimeStampType;
 import cz.dfi.datamodel.graphable.DoubleQuantity;
 import cz.dfi.datamodel.graphable.DoubleValueWrapper;
+import cz.dfi.datamodel.values.StringValueWrapper;
 import cz.dfi.datamodel.values.TimeInterval;
 import cz.dfi.datamodel.values.ValueWrapper;
 import cz.dfi.datamodel.values.ValuesGroupWrapper;
+import cz.dfi.recorddataprovider.TimeToStringConverter;
+import java.text.DateFormat;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import org.netbeans.api.annotations.common.CheckForNull;
 
 /**
- * Series group wrapper which contains the time information. The other
- * implementation of {@link SeriesGroupWrapper} does not contain the time
- * information itself. However, it has to have parent which is able to provide
- * the time information when needed. Instance of this class does not have to
- * have parent.
+ * Series group wrapper which contains the time information.
+ * To create a series use the {@link #create(java.lang.String, cz.dfi.datamodel.series.SeriesGroupWrapper) }
+ * method or the {@link #create(java.lang.String, cz.dfi.datamodel.series.TimeStampArray) } method.
+ * <p>
+ * This class is suitable for being extended if the user wants to create a special
+ * group wrapper.
+ * <p>
+ * The other
+ * implementation of {@link SeriesGroupWrapper}  the {@link  NestedSeriesGroupWrapper}
+ * does not contain the time
+ * information itself. However, it has to have a parent which is able to provide
+ * the time information when needed. 
+ * <p>
+ * Instance of this class does not have to
+ * have parent but it has to have the time information.
+ * 
  *
  * @author Tomas Prochazka 28.2.2016
  */
@@ -88,6 +103,21 @@ public class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
         if (groupWrapper.getChildren().isEmpty()) {
             return Collections.emptyList();
         } else {
+            int first = getTimeStamps().getFirstGreaterThanOrEqualIndex(t1, timeType);
+            int last = getTimeStamps().getLastLessThanOrEqualIndex(t2, timeType);
+            TimeToStringConverter converter = TimeToStringConverter.get();
+            String time;
+            Date d = new Date((t2 - t1) / 1_000_000); //to millis conversion
+            DateFormat format;
+            if (timeType == TimeStampType.TimeOfRecord) {
+                format = converter.getRecordingTimeGraphFormat();
+            } else {
+                format = converter.getOnboardTimeGraphFormat();
+            }
+            if (getParent() == null) {
+                groupWrapper.addChild(new StringValueWrapper("Length", timeInterval, format.format(d)));
+                groupWrapper.addChild(new DoubleValueWrapper("Count", timeInterval, last - first + 1, "#"));
+            }
             return Collections.singleton(groupWrapper);
         }
 
@@ -109,6 +139,7 @@ public class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
     /**
      * Searches the children quantities for a double quantity with a name which
      * contains the given substring.
+     *
      * @param val lowercase substring
      * @return
      */
@@ -125,7 +156,9 @@ public class TopLevelSeriesGroupWrapper extends SeriesGroupWrapper {
     }
 
     /**
-     * Searches the children quantities for a double quantity with a name such that it contains one of the given substrings.
+     * Searches the children quantities for a double quantity with a name such
+     * that it contains one of the given substrings.
+     *
      * @param substrings lowercase substring
      * @return
      */

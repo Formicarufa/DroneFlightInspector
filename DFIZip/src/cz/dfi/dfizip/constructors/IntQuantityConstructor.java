@@ -8,7 +8,11 @@ import cz.dfi.datamodel.series.SeriesWrapper;
 import cz.dfi.dfizip.readers.IntReader;
 import cz.dfi.dfizip.readers.ValueReader;
 import cz.dfi.dfizip.special.SpecialDoubleQuantProvider;
-
+/**
+ * Creates a series of integer values.
+ * See {@link SingleSeriesConstructor}
+ * @author Tomas Prochazka
+ */
 public class IntQuantityConstructor implements SingleSeriesConstructor {
 
     IntReader reader = new IntReader();

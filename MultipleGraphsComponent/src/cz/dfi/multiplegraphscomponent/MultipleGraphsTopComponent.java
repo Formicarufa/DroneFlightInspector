@@ -5,18 +5,14 @@ package cz.dfi.multiplegraphscomponent;
 import cz.dfi.recorddataprovider.TimeToStringConverter;
 import cz.dfi.graphsselectioncomponent.GraphedQuantity;
 import cz.dfi.recorddataprovider.FileLookup;
-import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
-import org.jfree.chart.plot.IntervalMarker;
-import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -29,7 +25,11 @@ import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Top component which displays something.
+ * Contains the graphing component which displays the plots selected in the
+ * Graphs Selection Window.
+ * <p>
+ * Tracks the instances of {@link GraphedQuantity} in the {@link FileLookup}
+ * and notifies the {@link MultipleModifiableGraphsDataset} if a change occurs.
  */
 @ConvertAsProperties(
         dtd = "-//cz.dfi.multiplegraphscomponent//MultipleGraphs//EN",
@@ -50,10 +50,10 @@ import org.openide.util.NbBundle.Messages;
 @Messages({
     "CTL_MultipleGraphsAction=MultipleGraphs",
     "CTL_MultipleGraphsTopComponent=MultipleGraphs Window",
-    "HINT_MultipleGraphsTopComponent=This is a MultipleGraphs window"
+    "HINT_MultipleGraphsTopComponent=Displays plots of the quantities selected in the Graphs Selection Window"
 })
 public final class MultipleGraphsTopComponent extends TopComponent {
-
+    private static final long serialVersionUID = 1L;
     protected final JFreeChart chart;
     protected final MultipleModifiableGraphsDataset dataset;
     private final Lookup.Result<GraphedQuantity> quantitiesSearch;
@@ -79,7 +79,6 @@ public final class MultipleGraphsTopComponent extends TopComponent {
         final DateFormat timeFormat = converter.getRecordingTimeGraphFormat();
         axis.setDateFormatOverride(timeFormat);
         add(p);
-       // TODO: have to write own mouse wheel zoom-in, zoom-out control, because the one of JFreeChart is buggy.
         p.setMouseWheelEnabled(true);
         highlighter = SelectionHighlighter.create(plot);
     }
@@ -97,26 +96,13 @@ public final class MultipleGraphsTopComponent extends TopComponent {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-    @Override
-    public void componentOpened() {
-        // TODO add custom code on component opening
-    }
-
-    @Override
-    public void componentClosed() {
-        // TODO add custom code on component closing
-    }
 
     void writeProperties(java.util.Properties p) {
-        // better to version settings since initial version as advocated at
-        // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
-        // TODO store your settings
     }
 
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
-        // TODO read your settings according to their version
     }
 
     public void resultChanged(LookupEvent ev) {

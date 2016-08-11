@@ -4,7 +4,8 @@
 package cz.dfi.datamodel.values;
 
 /**
- * Group of values which contains time information.
+ * Group of values, which contains time information.
+ * @see cz.dfi.datamodel.series.TopLevelSeriesGroupWrapper
  */
 public class DefaultValuesGroupWrapper extends ValuesGroupWrapper {
 

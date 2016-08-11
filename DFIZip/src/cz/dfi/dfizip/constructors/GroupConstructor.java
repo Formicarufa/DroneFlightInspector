@@ -17,7 +17,10 @@ import org.netbeans.api.annotations.common.NullAllowed;
 import org.openide.util.Lookup;
 
 /**
- *
+ * Stores a list of series constructors.
+ * When the data are parsed, the group constructor is used to create a group of series
+ * The group constructor uses the series constructors to create
+ * the content of the new group and creates the group.
  * @author Tomas Prochazka 5.5.2016
  */
 public class GroupConstructor implements SeriesConstructor {

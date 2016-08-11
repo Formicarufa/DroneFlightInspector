@@ -11,8 +11,10 @@ import org.netbeans.api.annotations.common.CheckForNull;
 /**
  * This is an interface for classes which wrap a set of
  * loaded values.
+ * <p>
  * The interface provides method to get the name of the type of data,
  * methods to get array of points in time for which the values are present.
+ * <p>
  * However, it does not provide access to the data itself.
  * The reason is, the loaded data can be of different types, including
  * primitive types, which can't be represented by generics.

@@ -20,6 +20,11 @@ import org.openide.util.NbBundle.Messages;
 
 /**
  * Top component which displays graphs of motor powers.
+ * <p>
+ * Contains jFreeChart panel.
+ * <p>
+ * Tracks the {@link MotorsWrapper} in the {@link FileLookup} and uses the 
+ * {@link MultipleValuesDataset"} to plot the values.
  */
 @TopComponent.Description(
         preferredID = "MotorsGraphTopComponent",
@@ -48,9 +53,6 @@ public final class MotorsGraphTopComponent extends TopComponent implements Looku
     public MotorsGraphTopComponent() {
         initComponents();
         dataSet = new MultipleValuesDataset();
-//        chart = ChartFactory.createXYLineChart(null,
-//                "Time [sec]", "Motor power [percent]", dataSet, PlotOrientation.VERTICAL, true, true,
-//                false);
         chart = ChartFactory.createTimeSeriesChart(null, "Time [sec]", "Motor powers", dataSet, true, true, false);
         ChartPanel cp = new ChartPanel(chart);
         jPanel1.setLayout(new BorderLayout());

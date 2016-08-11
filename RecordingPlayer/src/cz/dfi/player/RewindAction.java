@@ -13,7 +13,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
-        category = "Bugtracking",
+        category = "RecordingPlayer",
         id = "cz.dfi.player.RewindAction"
 )
 @ActionRegistration(
@@ -22,6 +22,9 @@ import org.openide.util.NbBundle.Messages;
 )
 @ActionReference(path = "Toolbars/File", position = 600)
 @Messages("CTL_RewindAction=Rewind")
+/**
+ * This action invokes the cookie that moves the time selection to the start of the recording.
+ */
 public final class RewindAction implements ActionListener {
 
     private final RewindCookie context;

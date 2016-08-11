@@ -7,7 +7,10 @@ import java.io.File;
 import org.openide.util.lookup.InstanceContent;
 
 /**
- * 
+ * File importer is a service that loads the data from a file and
+ * puts them into the file's lookup.
+ * File importer has to be registered as a service in order to be able
+ * to reopen the file after the application is closed.
  * @author Tomas Prochazka
  * 20.11.2015
  */

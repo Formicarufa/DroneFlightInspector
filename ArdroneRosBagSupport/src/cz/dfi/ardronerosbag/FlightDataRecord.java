@@ -1,9 +1,10 @@
 /*
  */
-package cz.dfi.datamodel;
+package cz.dfi.ardronerosbag;
 
 /**
- *
+ * Stores the message received from AR Drone and stored by
+ * ardrone_autonomy in ROS as /ardrone/navdata 
  * @author Tomas Prochazka 21.11.2015
  */
 public class FlightDataRecord {
